@@ -1,7 +1,7 @@
 package com.agie;
 
 interface Currency {
-    // needs exchange rates
+    // needs exchange rates 2
     public String getSymbol();
     public int getExchangeRate(Currency other);
 }
