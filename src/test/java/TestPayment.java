@@ -11,6 +11,7 @@ import com.agie.Currency;
 import com.agie.PaymentType;
 
 public class TestPayment {
+	
 
     @Test
     public void testRefundNegativeAmount() {
