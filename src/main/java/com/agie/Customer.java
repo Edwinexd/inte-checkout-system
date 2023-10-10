@@ -1,5 +1,5 @@
 package com.agie;
 
 public class Customer {
-    // pnr
+    int pnr;
 }
