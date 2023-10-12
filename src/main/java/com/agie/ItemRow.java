@@ -1,16 +1,10 @@
 package com.agie;
 
-interface ItemRow {
-    public Item getItem();
-    public int getQuantity(); // negative for returns
-    public Money getTotal();
-}
-
 public class ItemRow {
     private final Item item;
-    private final double quantity;
+    private final double quantity; // negative for returns, non-integer for weight-based items
 
-    public ItemRowImpl(Item item, double quantity) {
+    public ItemRow(Item item, double quantity) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
@@ -25,11 +19,18 @@ public class ItemRow {
         return item;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public Money getTotal() {
-        return item.getUnitPrice().multiply(quantity);
+    public ItemRowTotal getTotal() {
+        Money total = item.getUnitPrice().multiply(quantity);
+        Money vat = total.multiply(item.getItemCategory().getVatRate().getRate());
+        Money totalWithVat = total.add(vat);
+        return new ItemRowTotal(total, vat, totalWithVat);
+    }
+
+    public String toString() {
+        return String.format("%.3f - %s", quantity, item.toString());
     }
 }

@@ -25,6 +25,10 @@ public class ItemCategory {
         return vatRate;
     }
 
+    /**
+     * Returns the age limit for this item category.
+     * May be null if there is no age limit.
+     */
     public AgeLimit getAgeLimit () {
         return ageLimit;
     }
