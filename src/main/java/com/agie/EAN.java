@@ -19,24 +19,30 @@ public class EAN {
         this.number = number;
     }
 
-    private long getCheckDigit(long number) {
+    private int getCheckDigit(long number) {
         // https://boxshot.com/barcode/tutorials/ean-13-calculator/
-        long sum = 0;
-        long[] digits = new long[EAN_LENGTH];
+        int evenSum = 0;
+        int oddSum = 0;
+
+        int[] digits = new int[EAN_LENGTH-1];
+        number /= 10; // Discard check digit
         for (int i = digits.length-1; i >= 0; i--) {
-            digits[i] = number % 10;
+            // cast is safe as % 10 will yield a single digit reminder
+            digits[i] = (int) (number % 10);
             number /= 10;
         }
         for (int i = 0; i < digits.length; i++) {
-            if (i % 2 == 0) {
-                sum += digits[i];
+            // Formula uses 1-index counting
+            if ((i+1) % 2 == 0) {
+                evenSum += digits[i];
             } else {
-                sum += digits[i] * 3;
+                oddSum += digits[i];
             }
         }
-        long checkDigit = 10 - (sum % 10);
-        if (checkDigit == 10) {
-            checkDigit = 0;
+        evenSum *= 3;
+        int checkDigit = (evenSum + oddSum) % 10;
+        if (checkDigit != 0) {
+            checkDigit = 10 - checkDigit;
         }
         return checkDigit;
     }
