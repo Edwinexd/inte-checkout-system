@@ -1,5 +1,7 @@
 package com.agie;
 
+import sun.jvm.hotspot.utilities.AssertionFailure;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,7 +16,11 @@ public class Receipt implements ReceiptInterface {
     private Date receiptDate;
 
     public Receipt(int Id){
+        if (Id <= -1) {
+            throw new IllegalArgumentException("ID can't be less than one.");
+        }
         this.Id = Id;
+
         itemRowHolder = new ArrayList<>();
         totalWithoutTaxes = new Money();
         taxesOnly = new Money();
