@@ -14,41 +14,167 @@ public class TestPayment {
 	
 
     @Test
-    public void testRefundNegativeAmount() {
+    public void testRefundNegativeAmountCash() {
     	int validNegativeNumber = -50;
-    	Money money = new Money(validNegativeNumber, Currency.SEK)
-    	Payment payment = new Payment(money, PaymentType.Cash);
-    	assertEquals(money.getAmountOfMoney(Currency.SEK), Payment.getAmountOfMoney(Currency.SEK));
+    	Money money = new Money(validNegativeNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.CASH);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    
+    public void testRefundNegativeAmountCreditCard() {
+    	int validNegativeNumber = -50;
+    	Money money = new Money(validNegativeNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.CREDIT_CARD);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    
+    public void testRefundNegativeAmountDebitCard() {
+    	int validNegativeNumber = -50;
+    	Money money = new Money(validNegativeNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.DEBIT_CARD);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    
+    public void testRefundNegativeAmountGiftCard() {
+    	int validNegativeNumber = -50;
+    	Money money = new Money(validNegativeNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.GIFT_CARD);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    
+    public void testRefundNegativeAmountSwish() {
+    	int validNegativeNumber = -50;
+    	Money money = new Money(validNegativeNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.SWISH);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
     }
     
     @Test
-    public void testUnderMininimumAmount() {
+    public void testUnderMininimumAmountCash() {
     	final int AmountUnderMinimum = -10001;
-    	Money money = new Money(AmountUnderMinimum, Currency.SEK)
-    	assertThrows(IllegalArgumentException, new Payment(money))
+    	Money money = new Money(AmountUnderMinimum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH);
+    	});
+    }
+    
+    @Test
+    public void testUnderMininimumAmountCreditCard() {
+    	final int AmountUnderMinimum = -10001;
+    	Money money = new Money(AmountUnderMinimum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CREDIT_CARD);
+    	});
+    }
+    
+    @Test
+    public void testUnderMininimumAmountDebitCard() {
+    	final int AmountUnderMinimum = -10001;
+    	Money money = new Money(AmountUnderMinimum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.DEBIT_CARD);
+    	});
+    }
+    
+    @Test
+    public void testUnderMininimumAmountSwish() {
+    	final int AmountUnderMinimum = -10001;
+    	Money money = new Money(AmountUnderMinimum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.SWISH);
+    	});
     }
     
     @Test
     public void testZeroPayment() {
-    	Money money = new Money(0, Currency.SEK)
-    	assertThrows(IllegalArgumentException, new Payment(money))
+    	Money money = new Money(0, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH); //PaymentType does not matter
+    	}); 
     }
     
     @Test
-    public void testOverMaxmimumPayment() {
+    public void testOverMaxmimumPaymentSwish() {
     	final int AmountOverMaximum = 10001;
-    	Money money = new Money(AmountOverMaximum, Currency.SEK)
-    	assertThrows(IllegalArgumentException, new Payment(money))
+    	Money money = new Money(AmountOverMaximum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH);
+    	});
     }
     
     @Test
-    public void testPurchasePositiveAmount() {
-    	int validPositiveNumber = 50;
-    	Money money = new Money(validPositiveNumber, Currency.SEK)
-    	Payment payment = new Payment(money);
-    	assertEquals(money.getAmountOfMoney(Currency.SEK), Payment.getAmountOfMoney(Currency.SEK));
+    public void testOverMaxmimumPaymentGiftCard() {
+    	final int AmountOverMaximum = 10001;
+    	Money money = new Money(AmountOverMaximum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH);
+    	});
     }
     
+    @Test
+    public void testOverMaxmimumPaymentDebitCard() {
+    	final int AmountOverMaximum = 10001;
+    	Money money = new Money(AmountOverMaximum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH);
+    	});
+    }
+    
+    @Test
+    public void testOverMaxmimumPaymentCreditCard() {
+    	final int AmountOverMaximum = 10001;
+    	Money money = new Money(AmountOverMaximum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH);
+    	});
+    }
+    
+    @Test
+    public void testOverMaxmimumPaymentCASH() {
+    	final int AmountOverMaximum = 10001;
+    	Money money = new Money(AmountOverMaximum, Currency.SEK);
+    	assertThrows(IllegalArgumentException.class, () -> {
+    		new Payment(money, PaymentType.CASH);
+    	});
+    }
+    
+    @Test
+    public void testPurchasePositiveAmountGiftCard() {
+    	int validPositiveNumber = 50;
+    	Money money = new Money(validPositiveNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.GIFT_CARD);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    
+    @Test
+    public void testPurchasePositiveAmountSwish() {
+    	int validPositiveNumber = 50;
+    	Money money = new Money(validPositiveNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.SWISH);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    @Test
+    public void testPurchasePositiveAmountDebitCard() {
+    	int validPositiveNumber = 50;
+    	Money money = new Money(validPositiveNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.DEBIT_CARD);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    @Test
+    public void testPurchasePositiveAmountCreditCard() {
+    	int validPositiveNumber = 50;
+    	Money money = new Money(validPositiveNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.CREDIT_CARD);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+    @Test
+    public void testPurchasePositiveAmountCash() {
+    	int validPositiveNumber = 50;
+    	Money money = new Money(validPositiveNumber, Currency.SEK);
+    	Payment payment = new Payment(money, PaymentType.CASH);
+    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    }
+
     
     
     
