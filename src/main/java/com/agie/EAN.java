@@ -5,11 +5,11 @@ public class EAN {
 
     private final long number;
 
-    public EAN (Long number) {
-        if (number == null) {
-            throw new IllegalArgumentException("Number cannot be null");
+    public EAN (long number) {
+        if (number < 0) {
+            throw new IllegalArgumentException("EAN may not be negative");
         }
-        if (number.toString().length() != EAN_LENGTH) {
+        if (Long.toString(number).length() != EAN_LENGTH) {
             throw new IllegalArgumentException("Only EAN-13 supported");
         }
         if (getCheckDigit(number) != number % 10) {
@@ -54,9 +54,6 @@ public class EAN {
 
     @Override
     public boolean equals (Object obj) {
-        if (obj == null) {
-            return false;
-        }
         if (!(obj instanceof EAN)) {
             return false;
         }
