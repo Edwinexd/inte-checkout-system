@@ -7,6 +7,7 @@ import com.agie.EAN;
 import com.agie.Money;
 import com.agie.Supplier;
 import com.agie.VATRate;
+import com.agie.Currency;
 import com.agie.Deposit;
 import com.agie.Item;
 import com.agie.ItemCategory;
@@ -14,7 +15,7 @@ import com.agie.ItemCategory;
 
 public class ItemTest {
     private static final String VALID_NAME = "Test";
-    private static final Money VALID_UNIT_PRICE = new Money(1);
+    private static final Money VALID_UNIT_PRICE = new Money(1, Currency.SEK);
     private static final ItemCategory VALID_ITEM_CATEGORY = new ItemCategory("Fruit", VATRate.VAT_12, null);
     private static final Deposit VALID_DEPOSIT = Deposit.ONE;
     private static final Supplier VALID_SUPPLIER = new Supplier("Test");

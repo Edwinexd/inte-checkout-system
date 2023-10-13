@@ -8,10 +8,11 @@ import com.agie.Money;
 import com.agie.Supplier;
 import com.agie.VATRate;
 import com.agie.ItemCategory;
+import com.agie.Currency;
 import com.agie.Item;
 
 public class ItemRowTest {
-    private static final Item VALID_WEIGHT_ITEM = new Item("Test", new Money(1),
+    private static final Item VALID_WEIGHT_ITEM = new Item("Test", new Money(1, Currency.SEK),
         new ItemCategory("Fruit", VATRate.VAT_12, null),
         null,
         new Supplier("Test"),
@@ -19,7 +20,7 @@ public class ItemRowTest {
         true
     );
     
-    private static final Item VALID_ITEM = new Item("Test", new Money(2),
+    private static final Item VALID_ITEM = new Item("Test", new Money(2, Currency.SEK),
         new ItemCategory("Wheat", VATRate.VAT_12, null),
         null,
         new Supplier("Test"),
@@ -27,7 +28,7 @@ public class ItemRowTest {
         false
     );
 
-    private static final Item VALID_ITEM_25_VAT = new Item("Test", new Money(10),
+    private static final Item VALID_ITEM_25_VAT = new Item("Test", new Money(10, Currency.SEK),
         new ItemCategory("Car", VATRate.VAT_25, null),
         null,
         new Supplier("Test"),
@@ -61,28 +62,28 @@ public class ItemRowTest {
     public void getTotalWeightBasedTest() {
         ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, VALID_QUANTITY);
         Money total = itemRow.getTotal().total;
-        assertEquals(new Money(1), total);
+        assertEquals(new Money(1, Currency.SEK), total);
     }
 
     @Test
     public void getTotalNonWeightBasedTest() {
         ItemRow itemRow = new ItemRow(VALID_ITEM, VALID_QUANTITY);
         Money total = itemRow.getTotal().total;
-        assertEquals(new Money(2), total);
+        assertEquals(new Money(2, Currency.SEK), total);
     }
 
     @Test
     public void getTotalVATNonWeightBasedTest() {
         ItemRow itemRow = new ItemRow(VALID_ITEM_25_VAT, VALID_QUANTITY);
         Money vat = itemRow.getTotal().totalWithVat;
-        assertEquals(new Money(2.5), vat);
+        assertEquals(new Money(12.5, Currency.SEK), vat);
     }
 
     @Test
     public void getTotalVATWeightBasedTest() {
         ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, VALID_QUANTITY);
         Money vat = itemRow.getTotal().totalWithVat;
-        assertEquals(new Money(1.12), vat);
+        assertEquals(new Money(1.12, Currency.SEK), vat);
     }
 
     @Test

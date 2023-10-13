@@ -21,6 +21,7 @@ public class TestPayment {
     	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
     }
     
+	@Test
     public void testRefundNegativeAmountCreditCard() {
     	int validNegativeNumber = -50;
     	Money money = new Money(validNegativeNumber, Currency.SEK);
@@ -28,6 +29,7 @@ public class TestPayment {
     	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
     }
     
+	@Test
     public void testRefundNegativeAmountDebitCard() {
     	int validNegativeNumber = -50;
     	Money money = new Money(validNegativeNumber, Currency.SEK);
@@ -35,13 +37,16 @@ public class TestPayment {
     	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
     }
     
+	@Test
     public void testRefundNegativeAmountGiftCard() {
     	int validNegativeNumber = -50;
     	Money money = new Money(validNegativeNumber, Currency.SEK);
-    	Payment payment = new Payment(money, PaymentType.GIFT_CARD);
-    	assertEquals(money.getAmount(Currency.SEK), payment.getAmount(Currency.SEK));
+    	assertThrows(IllegalArgumentException.class, () -> {
+			new Payment(money, PaymentType.GIFT_CARD);
+		});
     }
     
+	@Test
     public void testRefundNegativeAmountSwish() {
     	int validNegativeNumber = -50;
     	Money money = new Money(validNegativeNumber, Currency.SEK);
@@ -60,7 +65,7 @@ public class TestPayment {
     
     @Test
     public void testUnderMininimumAmountCreditCard() {
-    	final int AmountUnderMinimum = -10001;
+    	final int AmountUnderMinimum = -50001;
     	Money money = new Money(AmountUnderMinimum, Currency.SEK);
     	assertThrows(IllegalArgumentException.class, () -> {
     		new Payment(money, PaymentType.CREDIT_CARD);
@@ -69,7 +74,7 @@ public class TestPayment {
     
     @Test
     public void testUnderMininimumAmountDebitCard() {
-    	final int AmountUnderMinimum = -10001;
+    	final int AmountUnderMinimum = -50001;
     	Money money = new Money(AmountUnderMinimum, Currency.SEK);
     	assertThrows(IllegalArgumentException.class, () -> {
     		new Payment(money, PaymentType.DEBIT_CARD);
