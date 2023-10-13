@@ -3,6 +3,7 @@ package com.agie;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
+
 public class Money {
 	
 	private HashMap<Currency, BigDecimal> exchangeRatesToSek = new HashMap<>();
