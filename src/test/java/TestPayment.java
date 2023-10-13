@@ -60,7 +60,7 @@ public class TestPayment {
     
     @Test
     public void testUnderMininimumAmountCreditCard() {
-    	final int AmountUnderMinimum = -10001;
+    	final int AmountUnderMinimum = -50001;
     	Money money = new Money(AmountUnderMinimum, Currency.SEK);
     	assertThrows(IllegalArgumentException.class, () -> {
     		new Payment(money, PaymentType.CREDIT_CARD);
@@ -69,7 +69,7 @@ public class TestPayment {
     
     @Test
     public void testUnderMininimumAmountDebitCard() {
-    	final int AmountUnderMinimum = -10001;
+    	final int AmountUnderMinimum = -50001;
     	Money money = new Money(AmountUnderMinimum, Currency.SEK);
     	assertThrows(IllegalArgumentException.class, () -> {
     		new Payment(money, PaymentType.DEBIT_CARD);

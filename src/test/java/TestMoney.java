@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -56,7 +57,30 @@ public class TestMoney {
     	Money money2 = new Money(validPositiveNumber, Currency.SEK);
     	assertTrue(money1.multiply(money2).getAmount(Currency.SEK).compareTo(new BigDecimal(validPositiveNumber).multiply(new BigDecimal(validPositiveNumber))) == 0);
     }
-	
+
+	@Test
+	public void testMultiplyMoneyInt() {
+		int validPositiveNumber = 5;
+		Money money = new Money(validPositiveNumber, Currency.SEK);
+		assertEquals(new Money(validPositiveNumber*5, Currency.SEK), money.multiply(validPositiveNumber));
+	}
+
+	@Test
+	public void testMultiplyMoneyDouble() {
+		int validPositiveNumber = 5;
+		double validPositiveDouble = 1.5;
+		Money money = new Money(validPositiveNumber, Currency.SEK);
+		assertEquals(new Money(validPositiveNumber*validPositiveDouble, Currency.SEK), money.multiply(validPositiveDouble));
+	}
+
+	@Test
+	public void testMultiplyMoneyBigDecimal() {
+		int validPositiveNumber = 5;
+		BigDecimal validPositiveBigDecimal = new BigDecimal(1.5);
+		Money money = new Money(validPositiveNumber, Currency.SEK);
+		assertEquals(new Money(new BigDecimal(validPositiveNumber).multiply(validPositiveBigDecimal), Currency.SEK), money.multiply(validPositiveBigDecimal));
+	}
+
     @Test
     public void testDivideMoney() {
     	int validPositiveNumber = 5;
@@ -64,7 +88,65 @@ public class TestMoney {
     	Money money2 = new Money(validPositiveNumber, Currency.SEK);
     	assertTrue(money1.divide(money2).getAmount(Currency.SEK).compareTo(new BigDecimal(validPositiveNumber).divide(new BigDecimal(validPositiveNumber))) == 0);
     }
+
+	@Test
+	public void testDivideByZeroThrows() {
+		int validPositiveNumber = 5;
+		Money money1 = new Money(validPositiveNumber, Currency.SEK);
+		Money money2 = new Money(0, Currency.SEK);
+		assertThrows(ArithmeticException.class, () -> {
+			money1.divide(money2);
+		});
+	}
+
+	@Test
+	public void testDivideMoneyInt() {
+		int validPositiveNumber = 5;
+		Money money = new Money(validPositiveNumber, Currency.SEK);
+		assertEquals(new Money(validPositiveNumber/5, Currency.SEK), money.divide(validPositiveNumber));
+	}
+
+	@Test
+	public void testDivideMoneyDouble() {
+		int validPositiveNumber = 5;
+		double validPositiveDouble = 2.5;
+		Money money = new Money(validPositiveNumber, Currency.SEK);
+		assertEquals(new Money(validPositiveNumber/validPositiveDouble, Currency.SEK), money.divide(validPositiveDouble));
+	}
+
+	@Test
+	public void testDivideMoneyBigDecimal() {
+		int validPositiveNumber = 5;
+		BigDecimal validPositiveBigDecimal = new BigDecimal(1.5);
+		Money money = new Money(validPositiveNumber, Currency.SEK);
+		Money expected = new Money((double)validPositiveNumber / validPositiveBigDecimal.doubleValue(), Currency.SEK);
+		assertEquals(expected, money.divide(validPositiveBigDecimal));
+	}
 	
-    
-    
+    @Test
+	public void equalsTest() {
+		Money money1 = new Money(1, Currency.SEK);
+		Money money2 = new Money(1, Currency.SEK);
+		assertEquals(money1, money2);
+	}
+
+	@Test
+	public void equalsDifferentCurrencyFalse() {
+		Money money1 = new Money(1, Currency.SEK);
+		Money money2 = new Money(1, Currency.EUR);
+		assertTrue(!money1.equals(money2));
+	}
+
+	@Test
+	public void equalsDifferentAmountFalse() {
+		Money money1 = new Money(1, Currency.SEK);
+		Money money2 = new Money(2, Currency.SEK);
+		assertTrue(!money1.equals(money2));
+	}
+
+	@Test
+	public void toStringTest() {
+		Money money = new Money(1, Currency.SEK);
+		assertEquals("1.00", money.toString());
+	}
 }

@@ -1,5 +1,6 @@
 package com.agie;
 
 public enum Currency {
-	SEK
+	SEK,
+	EUR
 }
