@@ -1,18 +1,18 @@
 package com.agie;
 
-interface Currency {
+interface ValidCurrency {
     // needs exchange rates 2
     public String getSymbol();
-    public int getExchangeRate(Currency other);
+    public int getExchangeRate(ValidCurrency other);
 }
 
-interface Money {
+public interface ValidMoney {
     public int getAmount();
     public Currency getCurrency();
-    public Money add(Money money);
-    public Money subtract(Money money);
-    public Money multiply(int multiplier);
-    public Money divide(int divisor);
+    public ValidMoney add(ValidMoney money);
+    public ValidMoney subtract(ValidMoney money);
+    public ValidMoney multiply(int multiplier);
+    public ValidMoney divide(int divisor);
     public boolean equals(Object object);
-    public Money valueIn(Currency currency);
+    public ValidMoney valueIn(Currency currency);
 }
