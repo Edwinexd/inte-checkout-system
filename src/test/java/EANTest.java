@@ -25,9 +25,9 @@ public class EANTest {
     }
 
     @Test
-    public void constructorNullThrows () {
+    public void constructorNegativeThrows () {
         assertThrows(IllegalArgumentException.class, () -> {
-            new EAN(null);
+            new EAN(-1234567890128L); // Casted to string would yield a 13 digit number
         });
     }
 
