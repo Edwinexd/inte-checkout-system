@@ -14,8 +14,9 @@ public class Receipt implements ReceiptInterface {
     private boolean isPaid;
     private ArrayList<Payment> paymentHolder;
     private Date receiptDate;
+    private Customer customer;
 
-    public Receipt(int Id){
+    public Receipt(int Id, Customer customer){
         if (Id <= -1) {
             throw new IllegalArgumentException("ID can't be less than one.");
         }
@@ -28,6 +29,8 @@ public class Receipt implements ReceiptInterface {
         paymentHolder = new ArrayList<>();
         receiptDate = new Date();
         paymentHolder = new ArrayList<>();
+
+        this.customer = customer;
     }
 
     @Override
@@ -53,6 +56,9 @@ public class Receipt implements ReceiptInterface {
 
     @Override
     public void addRow(ItemRow itemToAdd) {
+        if(itemToAdd.equals(null)){
+            throw new IllegalArgumentException();
+        }
         this.itemRowHolder.add(itemToAdd);
     }
 
@@ -66,12 +72,9 @@ public class Receipt implements ReceiptInterface {
         return receiptDate;
     }
 
-
-
-     //               Vad är en customer? ID?
     @Override
     public Customer getCustomer() {
-        return null;
+        return customer;
     }
 
     @Override
