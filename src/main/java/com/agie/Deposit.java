@@ -8,7 +8,7 @@ public enum Deposit {
     private final Money value;
 
     Deposit(double value) {
-        this.value = new Money(value);
+        this.value = new Money(value, Currency.SEK);
     }
 
     public Money getValue() {
