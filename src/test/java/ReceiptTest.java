@@ -1,5 +1,4 @@
 import com.agie.*;
-import jdk.vm.ci.code.Register;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -141,7 +140,7 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptIsPaid(){ // Its a hard knock life for us
+    public void receiptIsPaid(){ //TODO: FIX
         Receipt r = getStandardReceipt();
         Payment p = new Payment();
         r.addPayment(p);

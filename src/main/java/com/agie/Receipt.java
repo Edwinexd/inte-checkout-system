@@ -27,8 +27,7 @@ public class Receipt implements ReceiptInterface {
         taxesOnly = new Money();
         isPaid = false;
         paymentHolder = new ArrayList<>();
-        receiptDate = new Date();
-        paymentHolder = new ArrayList<>();
+        receiptDate = new Date(); // Dag, timme, minut, sekund
 
         this.customer = customer;
     }
