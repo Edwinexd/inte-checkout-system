@@ -3,11 +3,13 @@ package com.agie;
 import sun.jvm.hotspot.utilities.AssertionFailure;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Receipt implements ReceiptInterface {
 
-    private ArrayList<ItemRow> itemRowHolder;
+    private HashMap<Item, ItemRow> itemRows = new HashMap<>();
     private int Id;
     private Money totalWithoutTaxes;
     private Money taxesOnly;
@@ -22,7 +24,6 @@ public class Receipt implements ReceiptInterface {
         }
         this.Id = Id;
 
-        itemRowHolder = new ArrayList<>();
         totalWithoutTaxes = new Money();
         taxesOnly = new Money();
         isPaid = false;
@@ -37,9 +38,33 @@ public class Receipt implements ReceiptInterface {
         return this.Id;
     }
 
-    @Override
-    public ArrayList<ItemRow> getItemRows() {
-        return this.itemRowHolder;
+    public Collection<ItemRow> getItemRows() {
+        return itemRows.values();
+    }
+
+    public ItemRow getItemRow(Item item) {
+        return itemRows.get(item);
+    }
+
+    public void addItem(Item item, double quantity) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item cannot be null");
+        }
+        if (quantity == 0) {
+            throw new IllegalArgumentException("Quantity cannot be zero");
+        }
+
+        ItemRow itemRow = itemRows.get(item);
+        if (itemRow == null) {
+            itemRow = new ItemRow(item, quantity);
+        } else {
+            itemRow = itemRow.addQuantity(quantity);
+        }
+        if (itemRow.getQuantity() == 0) {
+            itemRows.remove(item);
+        } else {
+            itemRows.put(item, itemRow);
+        }
     }
 
     @Override
@@ -52,19 +77,6 @@ public class Receipt implements ReceiptInterface {
         return this.totalWithoutTaxes.getAmount();
     }
 
-
-    @Override
-    public void addRow(ItemRow itemToAdd) {
-        if(itemToAdd.equals(null)){
-            throw new IllegalArgumentException();
-        }
-        this.itemRowHolder.add(itemToAdd);
-    }
-
-    @Override
-    public void removeItemRow(ItemRow itemToRemove) {
-        this.itemRowHolder.remove(itemToRemove);
-    }
 
     @Override
     public Date getDate() { // Kanske return receiptDate.getTime(); ?

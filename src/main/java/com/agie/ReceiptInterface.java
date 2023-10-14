@@ -1,13 +1,14 @@
 package com.agie;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Pattern;
 
 interface ReceiptInterface {
     public int getId(); // sequence
     // säger inget om kvanitet
-    public ArrayList<ItemRow> getItemRows();
+    public Collection<ItemRow> getItemRows();
     public int getTotal();
     public int getTotalExVat();
     public void addRow(ItemRow itemToAddtoRow);

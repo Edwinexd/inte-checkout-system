@@ -30,6 +30,19 @@ public class ItemRow {
         return new ItemRowTotal(total, vat, totalWithVat);
     }
 
+    public ItemRow addQuantity(double quantity) {
+        double newQuantity = this.quantity + quantity;
+        if (newQuantity == 0) {
+            throw new IllegalArgumentException("Quantity cannot be zero");
+        }
+        return new ItemRow(item, newQuantity);
+    }
+
+    public ItemRow subtractQuantity(double quantity) {
+        return addQuantity(-quantity);
+    }
+
+    @Override
     public String toString() {
         return String.format("%.3f - %s", quantity, item.toString());
     }

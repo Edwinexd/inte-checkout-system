@@ -2,6 +2,7 @@ import com.agie.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,6 +13,11 @@ public class ReceiptTest {
     public Customer getStandardCustomer(){
         return new Customer(0001010001);
     }
+
+    public Item getStandardItem(){
+        return new Item("Apple", null, null, null, null, null, true);
+    }
+
     public ItemRow getStandardItemRow(){
         Item apple = new Item("Apple", null, null, null, null, null, true);
         return new ItemRow(apple, 1);
@@ -94,50 +100,53 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptAddNullItemRow(){
+    public void addItemNullThrows(){
         Receipt r = getStandardReceipt();
-        ItemRow i = null;
+        Item item = null;
+        double quantity = 1;
 
-        assertThrows(IllegalArgumentException.class, () -> r.addRow(i));
+        assertThrows(IllegalArgumentException.class, () -> r.addItem(item, quantity));
     }
 
     @Test
-    public void receiptRemoveItemRow(){
+    public void addItemTest(){
         Receipt r = getStandardReceipt();
-        ItemRow i = getStandardItemRow();
+        Item item = getStandardItem();
+        double quantity = 1;
 
-        r.addRow(i);
-        r.removeItemRow(i);
-        assertEquals(0, r.getItemRows().size());
+        r.addItem(item, quantity);
+
+        List<ItemRow> itemRows = new ArrayList<>();
+        itemRows.add(new ItemRow(item, quantity));
+
+        assertIterableEquals(itemRows, r.getItemRows());
     }
 
     @Test
-    public void receiptGetItemRows(){
+    public void addItemMultipleTimesIncreasesQuantity(){
         Receipt r = getStandardReceipt();
-        ItemRow i = getStandardItemRow();
+        Item item = getStandardItem();
+        double quantity = 1;
 
-        r.addRow(i);
-        assertEquals(i, r.getItemRows());
+        r.addItem(item, quantity);
+        r.addItem(item, quantity);
+        r.addItem(item, quantity);
+
+        assertEquals(3d, r.getItemRow(item).getQuantity());
     }
 
     @Test
-    public void receiptGetMultipleItemRows(){
+    public void addItemMultipleTimesToZeroRemovesRow(){
         Receipt r = getStandardReceipt();
-        ItemRow i1 = getStandardItemRow(); // ItemRow of the same item
-        ItemRow i2 = getStandardItemRow();
-        ItemRow i3 = getStandardItemRow();
+        Item item = getStandardItem();
 
-        ArrayList<ItemRow> listOfItemRows = new ArrayList<>();
+        r.addItem(item, 1);
+        r.addItem(item, 2);
+        r.addItem(item, -3);
 
-        listOfItemRows.add(i1);
-        listOfItemRows.add(i2);
-        listOfItemRows.add(i3);
-
-        r.addRow(i1);
-        r.addRow(i2);
-        r.addRow(i3);
-        assertEquals(listOfItemRows, r.getItemRows());
+        assertNull(r.getItemRow(item));
     }
+
 
     @Test
     public void receiptIsPaid(){ //TODO: FIX
