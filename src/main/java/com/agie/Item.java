@@ -1,22 +1,83 @@
 package com.agie;
 
-// in practice item type.
-interface Item {
-    public String getName();
-    public Money getPrice(); // vad symboliserar priset?
-    public boolean equals(Object object);
-    public VatRate getVatRate(); // momssats
-    public ItemType getItemType();
-    public Deposit getDeposit(); // pant
-    public AgeLimit getAgeLimit();
-    // vill man ha den här?
-    public boolean isAgeLimitSatisfied(int age);
-    public boolean isAgeLimitSatisfied(Customer customer);
+public class Item {
+    private final String name;
+    private final Money unitPrice;
+    private final ItemCategory itemCategory;
+    private final Deposit deposit;
+    private final Supplier supplier;
+    private final EAN ean;
+    private final boolean weightBased;
 
-    public Supplier getSupplier();
+    public Item(String name, Money unitPrice, ItemCategory itemCategory, Deposit deposit, Supplier supplier, EAN ean, boolean weightBased) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }
+        if (unitPrice == null) {
+            throw new IllegalArgumentException("Unit price cannot be null");
+        }
+        if (itemCategory == null) {
+            throw new IllegalArgumentException("Item category cannot be null");
+        }
+        if (supplier == null) {
+            throw new IllegalArgumentException("Supplier cannot be null");
+        }
+        this.name = name;
+        this.unitPrice = unitPrice;
+        this.itemCategory = itemCategory;
+        this.deposit = deposit;
+        this.supplier = supplier;
+        this.ean = ean;
+        this.weightBased = weightBased;
+    }
 
-    public EAN getEAN();
-    public PLU getPLU();
+    public String getName() {
+        return name;
+    }
 
-    public boolean isWeightBased(); // kg
+    public Money getUnitPrice() {
+        return unitPrice;
+    }
+
+    public ItemCategory getItemCategory() {
+        return itemCategory;
+    }
+
+    public Deposit getDeposit() {
+        return deposit;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public EAN getEAN() {
+        return ean;
+    }
+
+    /**
+     * Returns true if the unit price is based on weight in kilograms.
+    */
+    public boolean isWeightBased() {
+        return weightBased;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Item) {
+            Item item = (Item) object;
+            return name.equals(item.name) && unitPrice.equals(item.unitPrice) && itemCategory.equals(item.itemCategory) && deposit.equals(item.deposit) && supplier.equals(item.supplier) && ean.equals(item.ean) && weightBased == item.weightBased;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        if (weightBased) {
+            return String.format("%s - %s kr / kg", name, unitPrice);
+        } else {
+            return String.format("%s - %s kr", name, unitPrice);
+        }
+    }
+    
 }
