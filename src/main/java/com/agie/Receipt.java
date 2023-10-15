@@ -1,22 +1,21 @@
 package com.agie;
 
-import sun.jvm.hotspot.utilities.AssertionFailure;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Receipt implements ReceiptInterface {
+public class Receipt {
 
-    private HashMap<Item, ItemRow> itemRows = new HashMap<>();
-    private int Id;
+    private HashMap<Item, ItemRow> itemRowHolder = new HashMap<>();
+    private ArrayList<Payment> paymentHolder = new ArrayList<>();
+    private final int Id;
     private Money totalWithoutTaxes;
     private Money taxesOnly;
     private boolean isPaid;
-    private ArrayList<Payment> paymentHolder;
-    private Date receiptDate;
-    private Customer customer;
+    private final Date receiptDate;
+    private final Customer customer;
 
     public Receipt(int Id, Customer customer){
         if (Id <= -1) {
@@ -24,26 +23,28 @@ public class Receipt implements ReceiptInterface {
         }
         this.Id = Id;
 
-        totalWithoutTaxes = new Money();
-        taxesOnly = new Money();
-        isPaid = false;
-        paymentHolder = new ArrayList<>();
-        receiptDate = new Date(); // Dag, timme, minut, sekund
-
+        if(customer != null){
+            throw new IllegalArgumentException("Customer can't be null.");
+        }
         this.customer = customer;
+
+        totalWithoutTaxes = new Money(0, Currency.SEK); //TODO: Could there be EUR? USD? GBP? etc. Worth looking into.
+        taxesOnly = new Money(0 , Currency.SEK);
+
+        receiptDate = new Date(); // timestamp
+        isPaid = false;
     }
 
-    @Override
     public int getId() {
         return this.Id;
     }
 
-    public Collection<ItemRow> getItemRows() {
-        return itemRows.values();
+    public Collection<ItemRow> getItemRowHolder() {
+        return itemRowHolder.values();
     }
 
     public ItemRow getItemRow(Item item) {
-        return itemRows.get(item);
+        return itemRowHolder.get(item);
     }
 
     public void addItem(Item item, double quantity) {
@@ -54,69 +55,88 @@ public class Receipt implements ReceiptInterface {
             throw new IllegalArgumentException("Quantity cannot be zero");
         }
 
-        ItemRow itemRow = itemRows.get(item);
+        ItemRow itemRow = itemRowHolder.get(item);
         if (itemRow == null) {
             itemRow = new ItemRow(item, quantity);
         } else {
             itemRow = itemRow.addQuantity(quantity);
         }
         if (itemRow.getQuantity() == 0) {
-            itemRows.remove(item);
+            itemRowHolder.remove(item);
         } else {
-            itemRows.put(item, itemRow);
+            itemRowHolder.put(item, itemRow);
         }
     }
 
-    @Override
-    public int getTotal() {
-        return this.totalWithoutTaxes.getAmount() + this.taxesOnly.getAmount();
+    public BigDecimal getTotal() {
+        return this.totalWithoutTaxes.getAmount().add(this.taxesOnly.getAmount());
     }
 
-    @Override
-    public int getTotalExVat() {
+    public BigDecimal getTotalWithoutTaxes() {
         return this.totalWithoutTaxes.getAmount();
     }
 
-
-    @Override
     public Date getDate() { // Kanske return receiptDate.getTime(); ?
         return receiptDate;
     }
 
-    @Override
     public Customer getCustomer() {
         return customer;
     }
 
-    @Override
     public ArrayList<Payment> getPayments() {
         return paymentHolder;
     }
 
-    @Override
     public void addPayment(Payment payment) {
+        if(payment == null){
+            throw new IllegalArgumentException("Payment cannot be null");
+        }
+
+        if(payment.getMoney().getAmount().compareTo(BigDecimal.ZERO) == 0){
+            throw new IllegalArgumentException("Payment cannot be zero");
+        }
+
+        if(payment.getMoney().getAmount().compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("Payment cannot be negative");
+        }
+
         paymentHolder.add(payment);
+
+        checkIfPaid();
     }
 
-    @Override
+    private void checkIfPaid() {
+        BigDecimal total = this.getTotal();
+        BigDecimal amountPaid = new BigDecimal(0);
+        for (int i = 0; i < paymentHolder.size(); i++) { // There probably is an easier way to do this
+            amountPaid = amountPaid.add(paymentHolder.get(i).getMoney().getAmount());
+
+            //If the customer has paid the exact amount or more, the receipt is paid
+            if(amountPaid.compareTo(total) == 0 || amountPaid.compareTo(total) == 1){
+                this.isPaid = true;
+            }
+        }
+    }
+
     public boolean isPaid() {
         return this.isPaid;
     }
 
-    @Override
-    public int getChange() { // Gör om till money när money är gjord.
-
-        int change = getTotal();
+    public Money getChange() {
+        BigDecimal total = this.getTotal();
+        Money change = new Money(total, Currency.SEK);
 
         for (int i = 0; i < getPayments().size(); i++) {
-            change = change - getPayments().get(i).getAmount(); // Någonting liknande
+            change = change.subtract(paymentHolder.get(i).getMoney());
         }
 
         return change;
     }
 
-    @Override
+    /*
     public Discount[] getDiscounts() {
         return new Discount[0];
     }
+     */
 }

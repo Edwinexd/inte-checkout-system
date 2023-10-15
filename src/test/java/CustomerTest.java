@@ -33,7 +33,7 @@ public class CustomerTest {
     @Test
     public void customerPnrLengthIsTen(){
         Customer c = new Customer(0001010001);
-        assertEquals(10, c.getPnr().length());
+        assertEquals(10, String.valueOf(c.getPnr()).length());
     }
 
 }

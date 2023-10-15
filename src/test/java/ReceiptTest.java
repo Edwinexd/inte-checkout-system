@@ -119,7 +119,7 @@ public class ReceiptTest {
         List<ItemRow> itemRows = new ArrayList<>();
         itemRows.add(new ItemRow(item, quantity));
 
-        assertIterableEquals(itemRows, r.getItemRows());
+        assertIterableEquals(itemRows, r.getItemRowHolder());
     }
 
     @Test
