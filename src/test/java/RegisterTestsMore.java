@@ -15,6 +15,7 @@ import com.agie.Register;
 import com.agie.Supplier;
 import com.agie.VATRate;
 
+//Tester för hantering av items, kategorier, suppliers etc. 
 public class RegisterTestsMore {
 
 	@Test
