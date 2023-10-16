@@ -19,17 +19,20 @@ public class Register {
 	private boolean loggedIn = false;
 	private Customer customer;
 	private int currentReceiptId;
+	private int employeeId;
 
 	public Register(int registerNr) {
 		this.registerNumber = registerNr;
-		//addTestData();
 	}
-	
-	public Employee getEmployee(int id) {
-        return employeeList.get(id);
-    }
 
-	
+	public Employee getEmployee(int id) {
+		return employeeList.get(id);
+	}
+
+	public Receipt getCurrentReceipt() {
+		return currentReceipt;
+	}
+
 	private String formatStringInput(String theString) {
 		theString = theString.trim();
 		theString = theString.toLowerCase();
@@ -38,15 +41,17 @@ public class Register {
 		}
 		return theString;
 	}
-	
-	public void addItemCategory(String name, VATRate vatRate, AgeLimit ageLimit) {
+
+	public ItemCategory addItemCategory(String name, VATRate vatRate, AgeLimit ageLimit) {
 		name = formatStringInput(name);
 		if (itemCategories.get(name) != null) {
 			throw new IllegalArgumentException("Itemcategory already created");
 		}
-		itemCategories.put(name, new ItemCategory(name, vatRate, ageLimit));
+		ItemCategory itemCategory = new ItemCategory(name, vatRate, ageLimit);
+		itemCategories.put(name, itemCategory);
+		return itemCategory;
 	}
-	
+
 	public void removeItemCategory(String name) {
 		name = formatStringInput(name);
 		if (itemCategories.get(name) == null) {
@@ -54,15 +59,17 @@ public class Register {
 		}
 		itemCategories.remove(name);
 	}
-	
-	public void addSupplier(String name) {
+
+	public Supplier addSupplier(String name) {
 		name = formatStringInput(name);
 		if (suppliers.get(name) != null) {
 			throw new IllegalArgumentException("Supplier already created");
 		}
-		suppliers.put(name, new Supplier(name));
+		Supplier supplier = new Supplier(name);
+		suppliers.put(name, supplier);
+		return supplier;
 	}
-	
+
 	public void removeSupplier(String name) {
 		name = formatStringInput(name);
 		if (suppliers.get(name) == null) {
@@ -70,9 +77,10 @@ public class Register {
 		}
 		suppliers.remove(name);
 	}
-	
-	public void addItem(String name, int costInSek, String itemCategory, Deposit deposit, String supplier, AgeLimit ageLimit, long eanNumber, boolean weightBased) {
-		
+
+	public Item addItem(String name, int costInSek, String itemCategory, Deposit deposit, String supplier,
+			AgeLimit ageLimit, long eanNumber, boolean weightBased) {
+
 		name = formatStringInput(name);
 		EAN ean = new EAN(eanNumber);
 		if (itemList.get(ean) != null) {
@@ -84,22 +92,145 @@ public class Register {
 		if (suppliers.get(supplier) == null) {
 			throw new IllegalArgumentException("Supplier does not exist");
 		}
-		Item item = new Item(name, 
-				new Money(costInSek, Currency.SEK), 
-				itemCategories.get(itemCategory),
-				deposit,
-				suppliers.get(supplier), 
-				ean, 
-				weightBased);
+		Item item = new Item(name, new Money(costInSek, Currency.SEK), itemCategories.get(itemCategory), deposit,
+				suppliers.get(supplier), ean, weightBased);
 		itemList.put(ean, item);
+		return item;
 	}
-	
+
 	public void removeItem(String name) {
 		name = formatStringInput(name);
 		if (itemList.get(name) == null) {
 			throw new IllegalArgumentException("No Item with that name");
 		}
 		itemCategories.remove(name);
+	}
+
+	public Receipt createNewReceipt() {
+		if (!loggedIn) {
+			throw new IllegalStateException("No user is logged in");
+		} else {
+			currentReceipt = new Receipt(currentReceiptId, customer);
+			currentReceiptId++;
+			return currentReceipt;
+		}
+	}
+
+	public void scanItem(EAN ean) {
+		Item item = null;
+
+		for (EAN ean2 : itemList.keySet()) {
+			if (ean2.equals(ean)) {
+				item = itemList.get(ean2);
+				currentReceipt.addItem(item, 1);
+			}
+		}
+		if (item == null) {
+			throw new IllegalArgumentException("There is no item with that ean code");
+		}
+	}
+
+	public void scanRemoveItem(EAN ean) {
+
+		Item item = null;
+
+		for (EAN ean2 : itemList.keySet()) {
+			if (ean2.equals(ean)) {
+				item = itemList.get(ean2);
+				currentReceipt.addItem(item, -1);
+			}
+		}
+		if (item == null) {
+			throw new IllegalArgumentException("There is no item with that ean code");
+		}
+	}
+
+	public void scanReturnItem(int receiptId, EAN ean) {
+
+		if (!receiptHistory.containsKey(receiptId)) {
+			throw new IllegalArgumentException("There is no receipt with that id");
+		}
+		scanRemoveItem(ean);
+	}
+
+	public void cancelPurchase() {
+		currentReceipt = null;
+	}
+
+	public void parkReceipt() {
+		parkedReceipts.put(currentReceipt.getId(), currentReceipt);
+		currentReceipt = null;
+	}
+
+	public String printOutReceipt() {
+		return currentReceipt.toString();
+	}
+
+	public void finishReceipt() {
+		printOutReceipt();
+		receiptHistory.put(currentReceipt.getId(), currentReceipt);
+		currentReceipt = null;
+	}
+
+	public void unparkReceipt(int id) {
+		if (currentReceipt != null) {
+			throw new IllegalStateException("There is an active receipt already");
+		}
+		if (!parkedReceipts.containsKey(id)) {
+			throw new IllegalStateException("There is no parked receipt with that id");
+		}
+		currentReceipt = parkedReceipts.get(id);
+		parkedReceipts.remove(id);
+	}
+
+	public void LogInEmployee(int id) {
+
+		if (employeeList.containsKey(id)) {
+			loggedIn = true;
+			loggedInEmployee = employeeList.get(id);
+		} else {
+			throw new IllegalArgumentException("No employee with that id");
+		}
+	}
+
+	public Employee getloggedInEmployee() {
+		return loggedInEmployee;
+	}
+
+	public void logOutEmployee() {
+		if (!loggedIn) {
+			throw new IllegalStateException("No employee logged in");
+		}
+		loggedIn = false;
+		loggedInEmployee = null;
+	}
+
+	public Employee addEmployee(String name) {
+		for (Employee employee : employeeList.values()) {
+			if (employee.getName().equals(name)) {
+				throw new IllegalArgumentException("Employee Already added");
+			}
+		}
+		int id = employeeId;
+		employeeId++;
+		Employee employee = new Employee(id, name);
+		employeeList.put(id, employee);
+		return employee;
+	}
+
+	public void removeEmployee(String name) {
+		Employee employeeToBeRemoved = null;
+		for (Employee employee : employeeList.values()) {
+			if (employee.getName().equals(name)) {
+				employeeToBeRemoved = employee;
+			}
+		}
+
+		if (employeeToBeRemoved == null) {
+			throw new IllegalArgumentException("There is no employee with that name");
+		}
+		employeeList.remove(employeeToBeRemoved.getId());
+
 	}
 	
 	public int getRegisterNr() {
@@ -120,7 +251,7 @@ public class Register {
 	
 	public String printItems() {
 		String itemsString = "";
-		for (Item item: itemList.values()) {
+		for (Item item : itemList.values()) {
 			itemsString = itemsString + item.toString();
 		}
 		return itemsString;
@@ -128,7 +259,7 @@ public class Register {
 
 	public String printItemCategories() {
 		String itemCategoriesString = "";
-		for (ItemCategory itemCategory: itemCategories.values()) {
+		for (ItemCategory itemCategory : itemCategories.values()) {
 			itemCategoriesString = itemCategoriesString + itemCategory.getName();
 		}
 		return itemCategoriesString;
@@ -136,7 +267,7 @@ public class Register {
 
 	public String printSuppliers() {
 		String suppliersString = "";
-		for (Supplier supplier: suppliers.values()) {
+		for (Supplier supplier : suppliers.values()) {
 			suppliersString = suppliersString + supplier.getName();
 		}
 		return suppliersString;
@@ -156,110 +287,6 @@ public class Register {
 
 	public String printCustomer() {
 		return customer.toString();
-	}
-
-	public void createNewReceipt() {
-		if (loggedIn) {
-			currentReceipt = new Receipt(currentReceiptId, customer);
-			currentReceiptId++;
-		}
-	}
-
-	public void removeItemList() {
-		itemList = null;
-	}
-
-	public void scanItem(EAN ean) {
-		Item item = itemList.get(ean);
-		currentReceipt.addItem(item, 1);
-	}
-
-	public void scanRemoveItem(EAN ean) {
-		Item item = itemList.get(ean);
-		currentReceipt.addItem(item, -1);
-	}
-
-	public void returnItem(int receiptId, Item item) {
-
-		for (Integer id : receiptHistory.keySet()) {
-			if (id == receiptId) {
-				currentReceipt = receiptHistory.get(id);
-			}
-		}
-		currentReceipt.addItem(item, -1);
-		currentReceipt = null;
-
-	}
-
-	public void cancelPurchase() {
-		currentReceipt = null;
-	}
-
-	public void paymentMethod() {
-
-	}
-
-	public void parkReceipt() {
-		parkedReceipts.put(currentReceipt.getId(), currentReceipt);
-		currentReceipt = null;
-	}
-
-	public void getParkedReceipt_makeParkedReceiptIntoCurrentReceipt(int receiptId) {
-		for (Integer i : parkedReceipts.keySet()) {
-			if (i == receiptId) {
-				currentReceipt = parkedReceipts.get(i);
-			}
-		}
-	}
-
-	public void removeParkedReceipt(int receiptId) {
-		HashMap<Integer, Receipt> newMap = new HashMap<>();
-
-		for (Integer i : parkedReceipts.keySet()) {
-			if (!(i == receiptId)) {
-				newMap.put(i, parkedReceipts.get(i));
-			}
-			parkedReceipts = newMap;
-		}
-	}
-
-	public void printOutReceipt() {
-		currentReceipt.toString();
-	}
-
-	public void finishReceipt() {
-		printOutReceipt();
-		receiptHistory.put(currentReceipt.getId(), currentReceipt);
-		currentReceipt = null;
-	}
-
-	public void finishParkedReceipt() {
-		receiptHistory.put(currentReceipt.getId(), currentReceipt);
-		removeParkedReceipt(currentReceipt.getId());
-		printOutReceipt();
-		currentReceipt = null;
-	}
-
-	public void LogInEmployee(Employee employee) {
-		for (Integer i : employeeList.keySet()) {
-			if (employeeList.get(i) == employee) {
-				loggedIn = true;
-				loggedInEmployee = employee;
-			}
-		}
-	}
-
-	public Employee getloggedInEmployee() {
-		return loggedInEmployee;
-	}
-
-	public void logOutEmployee() {
-		loggedIn = false;
-	}
-
-	public void addEmployee(int id, String name) {
-		Employee employee = new Employee(name);
-		employeeList.put(id, employee);
 	}
 
 }
