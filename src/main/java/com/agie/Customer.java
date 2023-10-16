@@ -10,17 +10,17 @@ import java.util.Calendar;
 // The last 4 digits are a serial number that is used to differentiate people born on the same day.
 
 public class Customer {
-    private final int pnr;
+    private final long pnr;
     private final String pnrString;
     private final String pnrYear;
     private final String pnrMonth;
     private final String pnrDay;
     private final boolean isLeapYear;
 
-    public Customer(int personnummer){
+    public Customer(long personnummer){
 
         try{
-            pnrString = Integer.toString(personnummer);
+            pnrString = Integer.toString(Math.toIntExact(personnummer)); // Unure about math.toint
         } catch (NumberFormatException e){
             throw new IllegalArgumentException("Personnummer can only contain numbers");
         }
@@ -29,11 +29,8 @@ public class Customer {
         pnrMonth = pnrString.substring(4, 6);
         pnrDay = pnrString.substring(6, 8);
 
-        if(isYearALeapYear()){
-            isLeapYear = true;
-        } else {
-            isLeapYear = false;
-        }
+
+        isLeapYear = isYearALeapYear();
 
         if(!isLengthOfPnrValid()){
             throw new IllegalArgumentException("Personnummer has to be 12 in length");
@@ -49,10 +46,7 @@ public class Customer {
     }
 
     private boolean isLengthOfPnrValid() {
-        if(pnrString.length() != 12){
-            return false;
-        }
-        return true;
+        return pnrString.length() == 12;
     }
 
     private boolean isDateInFuture(){
@@ -69,9 +63,7 @@ public class Customer {
                 return true;
             }
             if (month == calendar.get(Calendar.MONTH)){
-                if(day > calendar.get(Calendar.DAY_OF_MONTH)){
-                    return true;
-                }
+                return day > calendar.get(Calendar.DAY_OF_MONTH);
             }
         }
 
@@ -96,33 +88,21 @@ public class Customer {
             daysInMonth = 31;
         }
 
-        // To avoid errors with parsing numbers such as 02 or 05 we do this first.
-        if(daysInMonth < 10){
-            return true;
-        }
-
-        if(Integer.parseInt(pnrDay) > daysInMonth){
-            return false;
-        }
-
-        return true;
+        return Integer.parseInt(pnrDay) <= daysInMonth;
     }
 
     private boolean isYearALeapYear() {
         int year = Integer.parseInt(pnrYear);
         if(year % 4 == 0){
             if(year % 100 == 0){
-                if(year % 400 == 0){ // no idea if this is needed
-                    return true;
-                }
-                return false;
+                return year % 400 == 0; // no idea if this last part is needed
             }
-            return true;
+            return false;
         }
         return false;
     }
 
-    public int getPnr(){
+    public long getPnr(){
         return this.pnr;
     }
 }

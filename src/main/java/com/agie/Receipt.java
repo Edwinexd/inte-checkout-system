@@ -19,7 +19,7 @@ public class Receipt {
 
     public Receipt(int Id, Customer customer){
         if (Id <= -1) {
-            throw new IllegalArgumentException("ID can't be less than one.");
+            throw new IllegalArgumentException("ID can't be negative.");
         }
         this.Id = Id;
 
@@ -39,8 +39,8 @@ public class Receipt {
         return this.Id;
     }
 
-    public Collection<ItemRow> getItemRowHolder() {
-        return itemRowHolder.values();
+    private HashMap<Item, ItemRow> getItemRowHolder() {
+        return itemRowHolder;
     }
 
     public ItemRow getItemRow(Item item) {
@@ -48,9 +48,13 @@ public class Receipt {
     }
 
     public void addItem(Item item, double quantity) {
+
+        /*
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
+
+         */
         if (quantity == 0) {
             throw new IllegalArgumentException("Quantity cannot be zero");
         }
@@ -84,11 +88,17 @@ public class Receipt {
         return customer;
     }
 
-    public ArrayList<Payment> getPayments() {
+    public Collection<Payment> getPayments() {
         return paymentHolder;
     }
 
     public void addPayment(Payment payment) {
+
+        /*
+
+        Lägg till detta i Payment klassen.
+        Borde inte kollas i Receipt
+
         if(payment == null){
             throw new IllegalArgumentException("Payment cannot be null");
         }
@@ -100,6 +110,8 @@ public class Receipt {
         if(payment.getMoney().getAmount().compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalArgumentException("Payment cannot be negative");
         }
+
+         */
 
         paymentHolder.add(payment);
 
@@ -113,7 +125,7 @@ public class Receipt {
             amountPaid = amountPaid.add(paymentHolder.get(i).getMoney().getAmount());
 
             //If the customer has paid the exact amount or more, the receipt is paid
-            if(amountPaid.compareTo(total) == 0 || amountPaid.compareTo(total) == 1){
+            if(amountPaid.compareTo(total) >= 0){
                 this.isPaid = true;
             }
         }
