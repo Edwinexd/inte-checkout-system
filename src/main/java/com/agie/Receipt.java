@@ -59,13 +59,14 @@ public class Receipt {
         if (itemRow == null) {
             itemRow = new ItemRow(item, quantity);
         } else {
-            itemRow = itemRow.addQuantity(quantity);
+            try {
+                itemRow = itemRow.addQuantity(quantity);
+            } catch (IllegalArgumentException e) {
+                itemRowHolder.remove(item);
+                return;
+            }
         }
-        if (itemRow.getQuantity() == 0) {
-            itemRowHolder.remove(item);
-        } else {
-            itemRowHolder.put(item, itemRow);
-        }
+        itemRowHolder.put(item, itemRow);
     }
 
     public BigDecimal getTotal() {
