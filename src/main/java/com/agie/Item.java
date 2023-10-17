@@ -64,7 +64,7 @@ public class Item {
 
     @Override
     public int hashCode() {
-        return name.hashCode() * unitPrice.hashCode() * itemCategory.hashCode() * deposit.hashCode() * supplier.hashCode() * ean.hashCode() * Boolean.hashCode(weightBased);
+        return name.hashCode() * unitPrice.hashCode() * itemCategory.hashCode() * supplier.hashCode() * ean.hashCode() * Boolean.hashCode(weightBased);
     }
 
     @Override
