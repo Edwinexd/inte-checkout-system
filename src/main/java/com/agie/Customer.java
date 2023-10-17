@@ -95,6 +95,7 @@ public class Customer {
         int year = Integer.parseInt(pnrYear);
         if(year % 4 == 0){
             if(year % 100 == 0){
+                // TODO: Dead code, guaranteed to be true
                 return year % 400 == 0; // no idea if this last part is needed
             }
             return false;
