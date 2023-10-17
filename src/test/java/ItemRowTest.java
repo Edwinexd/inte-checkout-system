@@ -87,6 +87,36 @@ public class ItemRowTest {
     }
 
     @Test
+    public void addQuantityNewValueZeroThrows () {
+        ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, -1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            itemRow.addQuantity(1);
+        });
+    }
+
+    @Test
+    public void addQuantityTest() {
+        ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, VALID_QUANTITY);
+        ItemRow newRow = itemRow.addQuantity(1d);
+        assertEquals(2d, newRow.getQuantity());
+    }
+
+    @Test
+    public void subtractQuantityNewValueZeroThrows () {
+        ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, 1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            itemRow.subtractQuantity(1);
+        });
+    }
+
+    @Test
+    public void subtractQuantityTest() {
+        ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, 2d);
+        ItemRow newRow = itemRow.subtractQuantity(1d);
+        assertEquals(1d, newRow.getQuantity());
+    }
+
+    @Test
     public void toStringTest() {
         ItemRow itemRow = new ItemRow(VALID_WEIGHT_ITEM, VALID_QUANTITY);
         assertEquals("1.000 - Test - 1.00 kr / kg", itemRow.toString());
