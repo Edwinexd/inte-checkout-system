@@ -7,8 +7,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
-
 public class LoggerTest {
     
     private FileWriter getMockedFileWriter(){
@@ -16,7 +14,7 @@ public class LoggerTest {
         return mockedFileWriter;
     }
 
-    private void writeLineOfEachLevel(Logger logger) throws IOException {
+    private void writeLineOfEachLevel(Logger logger) throws LoggingException {
         logger.log(LogLevel.DEBUG, "debug message");
         logger.log(LogLevel.INFO, "info message");
         logger.log(LogLevel.WARNING, "warning message");
@@ -28,21 +26,21 @@ public class LoggerTest {
     public void constructorLogLevelNullThrowsException(){
         FileWriter mockedFileWriter = getMockedFileWriter();
         assertThrows(IllegalArgumentException.class, () -> {
-            new Logger(mockedFileWriter, null);
+            new Logger(null, mockedFileWriter);
         });
     }
 
     @Test
     public void constructorWriterProvidedNullThrowsException(){
         assertThrows(IllegalArgumentException.class, () -> {
-            new Logger(null, LogLevel.DEBUG);
+            new Logger(LogLevel.DEBUG, null);
         });
     }
 
     @Test
     public void logLogLevelNullThrowsException(){
         FileWriter mockedFileWriter = getMockedFileWriter();
-        Logger logger = new Logger(mockedFileWriter, LogLevel.DEBUG);
+        Logger logger = new Logger(LogLevel.DEBUG, mockedFileWriter);
         assertThrows(IllegalArgumentException.class, () -> {
             logger.log(null, "message");
         });
@@ -51,7 +49,7 @@ public class LoggerTest {
     @Test
     public void logMessageNullThrowsException(){
         FileWriter mockedFileWriter = getMockedFileWriter();
-        Logger logger = new Logger(mockedFileWriter, LogLevel.DEBUG);
+        Logger logger = new Logger(LogLevel.DEBUG, mockedFileWriter);
         assertThrows(IllegalArgumentException.class, () -> {
             logger.log(LogLevel.DEBUG, null);
         });
@@ -67,33 +65,33 @@ public class LoggerTest {
     // }
 
     @Test
-    public void loggerWithDebugLevelLogsAll() throws IOException{
+    public void loggerWithDebugLevelLogsAll() throws LoggingException {
         FileWriter mockedFileWriter = getMockedFileWriter();
-        Logger logger = new Logger(mockedFileWriter, LogLevel.DEBUG);
+        Logger logger = new Logger(LogLevel.DEBUG, mockedFileWriter);
         writeLineOfEachLevel(logger);
         verify(mockedFileWriter, times(4)).push(anyString());
     }
 
     @Test
-    public void loggerWithInfoLevelLogsInfoAndAbove() throws IOException {
+    public void loggerWithInfoLevelLogsInfoAndAbove() throws LoggingException {
         FileWriter mockedFileWriter = getMockedFileWriter();
-        Logger logger = new Logger(mockedFileWriter, LogLevel.INFO);
+        Logger logger = new Logger(LogLevel.INFO, mockedFileWriter);
         writeLineOfEachLevel(logger);
         verify(mockedFileWriter, times(3)).push(anyString());
     }
 
     @Test
-    public void loggerWithWarningLevelLogsWarningAndAbove() throws IOException {
+    public void loggerWithWarningLevelLogsWarningAndAbove() throws LoggingException {
         FileWriter mockedFileWriter = getMockedFileWriter();
-        Logger logger = new Logger(mockedFileWriter, LogLevel.WARNING);
+        Logger logger = new Logger(LogLevel.WARNING, mockedFileWriter);
         writeLineOfEachLevel(logger);
         verify(mockedFileWriter, times(2)).push(anyString());
     }
 
     @Test
-    public void loggerWithErrorLevelLogsErrorOnly() throws IOException {
+    public void loggerWithErrorLevelLogsErrorOnly() throws LoggingException {
         FileWriter mockedFileWriter = getMockedFileWriter();
-        Logger logger = new Logger(mockedFileWriter, LogLevel.ERROR);
+        Logger logger = new Logger(LogLevel.ERROR, mockedFileWriter);
         writeLineOfEachLevel(logger);
         verify(mockedFileWriter, times(1)).push(anyString());
     }

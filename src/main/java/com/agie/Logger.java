@@ -11,10 +11,10 @@ public class Logger {
     }
 
     public Logger(LogLevel logLevel) throws IOException {
-        this(new FileWriter(getStandardLogPath(), true), logLevel);        
+        this(logLevel, new FileWriter(getStandardLogPath(), true));        
     }
 
-    public Logger(LogHandler handler, LogLevel logLevel) {
+    public Logger(LogLevel logLevel, LogHandler handler) {
         if (handler == null) {
             throw new IllegalArgumentException("handler cannot be null");
         }
@@ -26,7 +26,7 @@ public class Logger {
     }
 
 
-    public void log(LogLevel logLevel, String message) throws IOException {
+    public void log(LogLevel logLevel, String message) throws LoggingException {
         if (logLevel == null) {
             throw new IllegalArgumentException("logLevel cannot be null");
         }

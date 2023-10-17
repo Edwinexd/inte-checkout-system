@@ -19,15 +19,19 @@ public class FileWriter implements LogHandler {
         this.fileWriter = fileWriter;
     }
 
-    private void write(String message) throws IOException {
+    private void write(String message) throws LoggingException {
         if (message == null) {
             throw new IllegalArgumentException("message cannot be null");
         }
-        fileWriter.write(message);
+        try {
+            fileWriter.write(message);
+        } catch (IOException e) {
+            throw new LoggingException("Error writing to file", e);
+        }
     }
 
     @Override
-    public void push(String message) throws IOException {
+    public void push(String message) throws LoggingException {
         if (message == null) {
             throw new IllegalArgumentException("message cannot be null");
         }

@@ -2,6 +2,7 @@ import com.agie.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,7 +40,7 @@ public class FileWriterTest {
     }
 
     @Test
-    public void pushMessageEmptyWritesBlankLine() throws IOException {
+    public void pushMessageEmptyWritesBlankLine() throws LoggingException, IOException {
         java.io.FileWriter mockedFileWriter = getMockedFileWriter();
         FileWriter fileWriter = new FileWriter(mockedFileWriter);
         fileWriter.push("");
@@ -47,10 +48,20 @@ public class FileWriterTest {
     }
 
     @Test
-    public void pushMessageWritesMessage() throws IOException {
+    public void pushMessageWritesMessage() throws LoggingException, IOException {
         java.io.FileWriter mockedFileWriter = getMockedFileWriter();
         FileWriter fileWriter = new FileWriter(mockedFileWriter);
         fileWriter.push("message");
         verify(mockedFileWriter, times(1)).write("message\n");
+    }
+
+    @Test
+    public void pushIOErrorThrowsLoggingException() throws LoggingException, IOException {
+        java.io.FileWriter mockedFileWriter = getMockedFileWriter();
+        doThrow(LoggingException.class).when(mockedFileWriter).write("message\n");
+        FileWriter fileWriter = new FileWriter(mockedFileWriter);
+        assertThrows(IOException.class, () -> {
+            fileWriter.push("message");
+        });
     }
 }
