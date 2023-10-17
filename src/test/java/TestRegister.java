@@ -18,6 +18,7 @@ import com.agie.Receipt;
 import com.agie.Register;
 import com.agie.VATRate;
 
+
 public class TestRegister {
 	
 	@Test
@@ -145,6 +146,8 @@ public class TestRegister {
 		});
 	}
 
+	//////////////////////////////////////////////////////////////////
+	
 	
 	@Test
 	public void tryCreateNewReceipt(){
@@ -163,10 +166,12 @@ public class TestRegister {
 	public void loggInEmployee(){
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
 		
-		assertDoesNotThrow(() -> {
-			register.LogInEmployee(employee.getId());
-		});
+//		assertDoesNotThrow(() -> {
+//		register.LogInEmployee(employee.getId());
+//	});
+		assertEquals("Maria Svensson", register.getloggedInEmployee().getName());
 	}
 	
 	
@@ -335,8 +340,6 @@ public class TestRegister {
 
 		assertEquals(employee, register.getEmployee(employee.getId()));
 	}
-	
-	///////////////////////////////////////////////////////
 	
 	
 	

@@ -8,17 +8,16 @@ import java.util.HashMap;
 public class Register {
 
 	private int registerNumber;
-	private HashMap<EAN, Item> itemList = new HashMap();
+	private HashMap<EAN, Item> itemCollection = new HashMap(); 
 	private HashMap<Integer, Receipt> receiptHistory = new HashMap();
 	private HashMap<Integer, Receipt> parkedReceipts = new HashMap();
-	private HashMap<Integer, Employee> employeeList = new HashMap();
+	private HashMap<Integer, Employee> allEmployees = new HashMap();
 	private HashMap<String, ItemCategory> itemCategories = new HashMap();
 	private HashMap<String, Supplier> suppliers = new HashMap<>();
 	private Receipt currentReceipt;
 	private Employee loggedInEmployee;
-	private boolean loggedIn = false;
 	private Customer customer;
-	private int currentReceiptId;
+	private int receiptIdCounter;
 	private int employeeId;
 
 	public Register(int registerNr) {
@@ -26,7 +25,7 @@ public class Register {
 	}
 
 	public Employee getEmployee(int id) {
-		return employeeList.get(id);
+		return allEmployees.get(id);
 	}
 
 	public Receipt getCurrentReceipt() {
@@ -83,7 +82,7 @@ public class Register {
 
 		name = formatStringInput(name);
 		EAN ean = new EAN(eanNumber);
-		if (itemList.get(ean) != null) {
+		if (itemCollection.get(ean) != null) {
 			throw new IllegalArgumentException("Item with that name already created");
 		}
 		if (itemCategories.get(itemCategory) == null) {
@@ -94,24 +93,24 @@ public class Register {
 		}
 		Item item = new Item(name, new Money(costInSek, Currency.SEK), itemCategories.get(itemCategory), deposit,
 				suppliers.get(supplier), ean, weightBased);
-		itemList.put(ean, item);
+		itemCollection.put(ean, item);
 		return item;
 	}
 
 	public void removeItem(String name) {
 		name = formatStringInput(name);
-		if (itemList.get(name) == null) {
+		if (itemCollection.get(name) == null) {
 			throw new IllegalArgumentException("No Item with that name");
 		}
 		itemCategories.remove(name);
 	}
 
 	public Receipt createNewReceipt() {
-		if (!loggedIn) {
+		if(loggedInEmployee == null) {
 			throw new IllegalStateException("No user is logged in");
 		} else {
-			currentReceipt = new Receipt(currentReceiptId, customer);
-			currentReceiptId++;
+			currentReceipt = new Receipt(receiptIdCounter, customer);
+			receiptIdCounter++;
 			return currentReceipt;
 		}
 	}
@@ -119,9 +118,9 @@ public class Register {
 	public void scanItem(EAN ean) {
 		Item item = null;
 
-		for (EAN ean2 : itemList.keySet()) {
+		for (EAN ean2 : itemCollection.keySet()) {
 			if (ean2.equals(ean)) {
-				item = itemList.get(ean2);
+				item = itemCollection.get(ean2);
 				currentReceipt.addItem(item, 1);
 			}
 		}
@@ -134,9 +133,9 @@ public class Register {
 
 		Item item = null;
 
-		for (EAN ean2 : itemList.keySet()) {
+		for (EAN ean2 : itemCollection.keySet()) {
 			if (ean2.equals(ean)) {
-				item = itemList.get(ean2);
+				item = itemCollection.get(ean2);
 				currentReceipt.addItem(item, -1);
 			}
 		}
@@ -185,9 +184,8 @@ public class Register {
 
 	public void LogInEmployee(int id) {
 
-		if (employeeList.containsKey(id)) {
-			loggedIn = true;
-			loggedInEmployee = employeeList.get(id);
+		if (allEmployees.containsKey(id)) {
+			loggedInEmployee = allEmployees.get(id);
 		} else {
 			throw new IllegalArgumentException("No employee with that id");
 		}
@@ -198,15 +196,14 @@ public class Register {
 	}
 
 	public void logOutEmployee() {
-		if (!loggedIn) {
+		if(loggedInEmployee == null) {
 			throw new IllegalStateException("No employee logged in");
 		}
-		loggedIn = false;
 		loggedInEmployee = null;
 	}
 
 	public Employee addEmployee(String name) {
-		for (Employee employee : employeeList.values()) {
+		for (Employee employee : allEmployees.values()) {
 			if (employee.getName().equals(name)) {
 				throw new IllegalArgumentException("Employee Already added");
 			}
@@ -214,13 +211,13 @@ public class Register {
 		int id = employeeId;
 		employeeId++;
 		Employee employee = new Employee(id, name);
-		employeeList.put(id, employee);
+		allEmployees.put(id, employee);
 		return employee;
 	}
 
 	public void removeEmployee(String name) {
 		Employee employeeToBeRemoved = null;
-		for (Employee employee : employeeList.values()) {
+		for (Employee employee : allEmployees.values()) {
 			if (employee.getName().equals(name)) {
 				employeeToBeRemoved = employee;
 			}
@@ -229,7 +226,7 @@ public class Register {
 		if (employeeToBeRemoved == null) {
 			throw new IllegalArgumentException("There is no employee with that name");
 		}
-		employeeList.remove(employeeToBeRemoved.getId());
+		allEmployees.remove(employeeToBeRemoved.getId());
 
 	}
 	
@@ -246,12 +243,12 @@ public class Register {
 	}
 
 	public String printEmployeeList() {
-		return employeeList.toString();
+		return allEmployees.toString();
 	}
 	
 	public String printItems() {
 		String itemsString = "";
-		for (Item item : itemList.values()) {
+		for (Item item : itemCollection.values()) {
 			itemsString = itemsString + item.toString();
 		}
 		return itemsString;
@@ -279,10 +276,6 @@ public class Register {
 
 	public String printLoggedInEmployee() {
 		return loggedInEmployee.toString();
-	}
-
-	public String printLoggedIn() {
-		return String.valueOf(loggedIn);
 	}
 
 	public String printCustomer() {
