@@ -58,9 +58,9 @@ public class FileWriterTest {
     @Test
     public void pushIOErrorThrowsLoggingException() throws LoggingException, IOException {
         java.io.FileWriter mockedFileWriter = getMockedFileWriter();
-        doThrow(LoggingException.class).when(mockedFileWriter).write("message\n");
+        doThrow(IOException.class).when(mockedFileWriter).write("message\n");
         FileWriter fileWriter = new FileWriter(mockedFileWriter);
-        assertThrows(IOException.class, () -> {
+        assertThrows(LoggingException.class, () -> {
             fileWriter.push("message");
         });
     }
