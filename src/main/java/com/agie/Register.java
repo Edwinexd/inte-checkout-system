@@ -77,6 +77,7 @@ public class Register {
 		suppliers.remove(name);
 	}
 
+	// TODO: se över om meden ska ta in itemcategory resp supplier objekt istf strängar
 	public Item addItem(String name, int costInSek, String itemCategory, Deposit deposit, String supplier,
 			AgeLimit ageLimit, long eanNumber, boolean weightBased) {
 
@@ -242,6 +243,7 @@ public class Register {
 		return parkedReceipts.toString();
 	}
 
+	// TODO: Se över namngivningen
 	public String printEmployeeList() {
 		return allEmployees.toString();
 	}
