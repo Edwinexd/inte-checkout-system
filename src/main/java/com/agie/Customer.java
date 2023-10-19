@@ -21,31 +21,31 @@ public class Customer {
         if(personNumber < 0){
             throw new IllegalArgumentException("personNumber can't be negative");
         }
-
-        pnrString = Long.toString(personNumber);
-
-        if(!isLengthOfPnrValid()){
+        if(!isLengthOfPnrValid(personNumber)){
             throw new IllegalArgumentException("Personnummer has to be 12 in length");
         }
-        if(isDateInFuture()){
-            throw new IllegalArgumentException("Personnummer can't be in the future");
-        }
 
-        pnrYear = pnrString.substring(0, 4);
+        this.pnr = personNumber;
+        pnrString = ""+personNumber;
+
+        pnrYear = pnrString.substring(0,4);
         pnrMonth = pnrString.substring(4, 6);
         pnrDay = pnrString.substring(6, 8);
         // We can't validate the last 4 digits.
+
+        if(isDateInFuture()){
+            throw new IllegalArgumentException("Personnummer can't be in the future");
+        }
 
         isLeapYear = isYearALeapYear(Integer.parseInt(pnrYear));
 
         if(!isDayInMonthValid()){
             throw new IllegalArgumentException("Day is not valid for the month");
         }
-
-        this.pnr = personNumber;
     }
 
-    private boolean isLengthOfPnrValid() {
+    private boolean isLengthOfPnrValid(Long personNumber){
+        String pnrString = ""+personNumber;
         return pnrString.length() == 12;
     }
 
@@ -90,7 +90,7 @@ public class Customer {
         return Integer.parseInt(pnrDay) <= daysInMonth;
     }
 
-    private boolean isYearALeapYear(int year) {
+    public boolean isYearALeapYear(int year) {
         return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
     }
 

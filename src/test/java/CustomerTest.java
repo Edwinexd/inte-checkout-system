@@ -36,4 +36,10 @@ public class CustomerTest {
         assertEquals(10, String.valueOf(c.getPnr()).length());
     }
 
+    @Test
+    public void isLeapYearReturnTrue(){
+        Customer c = new Customer(200002029999L);
+        assertEquals(true, c.isYearALeapYear(2000));
+    }
+
 }
