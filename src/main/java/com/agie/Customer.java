@@ -1,7 +1,6 @@
 package com.agie;
 import java.util.Calendar;
 
-
 /* A personNumber is a 10-digit number that is used to identify a person in Sweden.
  In this implementation we've decided to use 12 digits instead of 10.
  This makes the format as following
