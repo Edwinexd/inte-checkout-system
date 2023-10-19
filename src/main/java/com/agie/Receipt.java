@@ -82,6 +82,7 @@ public class Receipt {
         return this.totalWithoutTaxes.getAmount().add(this.taxesOnly.getAmount());
     }
 
+    // TODO: Arbeta med Money abstraktionen ist
     public BigDecimal getTotalWithoutTaxes() {
         return this.totalWithoutTaxes.getAmount();
     }
@@ -122,6 +123,7 @@ public class Receipt {
         checkIfPaid();
     }
 
+    // TODO: Work with Money abstraction layer instead of BigDecimal
     private void checkIfPaid() {
         BigDecimal total = this.getTotal();
         BigDecimal amountPaid = new BigDecimal(0);
@@ -130,6 +132,7 @@ public class Receipt {
 
             //If the customer has paid the exact amount or more, the receipt is paid
             if(amountPaid.compareTo(total) >= 0){
+                // TODO: Borde inte vara ett fält på klassen
                 this.isPaid = true;
             }
         }
