@@ -63,6 +63,11 @@ public class Item {
     }
 
     @Override
+    public int hashCode() {
+        return name.hashCode() * unitPrice.hashCode() * itemCategory.hashCode() * supplier.hashCode() * ean.hashCode() * Boolean.hashCode(weightBased);
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (object instanceof Item) {
             Item item = (Item) object;

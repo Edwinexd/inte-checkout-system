@@ -48,8 +48,8 @@ public class EAN {
     }
 
     @Override
-    public String toString () {
-        return Long.toString(number);
+    public int hashCode () {
+        return Long.hashCode(number);
     }
 
     @Override
@@ -59,5 +59,10 @@ public class EAN {
         }
         EAN other = (EAN) obj;
         return this.number == other.number;
+    }
+
+    @Override
+    public String toString () {
+        return Long.toString(number);
     }
 }
