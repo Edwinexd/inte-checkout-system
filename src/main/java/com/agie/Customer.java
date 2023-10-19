@@ -2,7 +2,7 @@ package com.agie;
 import java.util.Calendar;
 
 
-// A Personnummer is a 10-digit number that is used to identify a person in Sweden.
+// A personNumber is a 10-digit number that is used to identify a person in Sweden.
 // In this implementation we've decided to use 12 digits instead of 10.
 // This makes the format as following
 // YYYYMMDDXXXX
@@ -17,10 +17,10 @@ public class Customer {
     private final String pnrDay;
     private final boolean isLeapYear;
 
-    public Customer(long personnummer){
+    public Customer(long personNumber){
 
         try{
-            pnrString = Integer.toString(Math.toIntExact(personnummer)); // Unure about math.toint
+            pnrString = Integer.toString(Math.toIntExact(personNumber)); // Unure about math.toint
         } catch (NumberFormatException e){
             throw new IllegalArgumentException("Personnummer can only contain numbers");
         }
@@ -42,10 +42,11 @@ public class Customer {
 
         isDayInMonthValid();
 
-        this.pnr = personnummer;
+        this.pnr = personNumber;
     }
 
     private boolean isLengthOfPnrValid() {
+        // TODO: negativa personnummer är tillåtna rn. Fix
         return pnrString.length() == 12;
     }
 
