@@ -59,7 +59,6 @@ public class Receipt {
 
          */
 
-        //Negative values are allowed, but 0 is not.
         if (quantity == 0) {
             throw new IllegalArgumentException("Quantity cannot be zero");
         }
