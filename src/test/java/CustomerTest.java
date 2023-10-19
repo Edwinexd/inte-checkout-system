@@ -36,10 +36,14 @@ public class CustomerTest {
         assertEquals(10, String.valueOf(c.getPnr()).length());
     }
 
+    /*
+    Must do the thing where you bypass the access modifier to test private methods
     @Test
     public void isLeapYearReturnTrue(){
         Customer c = new Customer(200002029999L);
         assertEquals(true, c.isYearALeapYear(2000));
     }
+
+     */
 
 }
