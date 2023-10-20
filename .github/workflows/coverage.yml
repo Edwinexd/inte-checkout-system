@@ -21,8 +21,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build with Gradle
-        run: chmod +x gradlew && ./gradlew build
+      - name: Run Coverage
+        run: |
+          chmod +x gradlew
+          ./gradlew testCoverage
 
       - name: Add coverage to PR
         id: jacoco
