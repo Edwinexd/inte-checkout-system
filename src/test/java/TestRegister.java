@@ -21,14 +21,14 @@ import com.agie.VATRate;
 public class TestRegister {
 
 	@Test
-	public void addValidFruitItemCategory() {
+	public void testAddValidFruitItemCategory() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		assertEquals("fruit", register.printItemCategories());
 	}
 
 	@Test
-	public void addFruitItemCategoryAgain() {
+	public void testAddFruitItemCategoryAgain() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -37,28 +37,28 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addFruitItemCategoryWithTrailingSpaces() {
+	public void testAddFruitItemCategoryWithTrailingSpaces() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit    ", VATRate.VAT_12, null);
 		assertEquals("fruit", register.printItemCategories());
 	}
 
 	@Test
-	public void addFruitItemCategoryWithLeadingSpaces() {
+	public void testAddFruitItemCategoryWithLeadingSpaces() {
 		Register register = new Register(0);
 		register.addItemCategory("    fruit", VATRate.VAT_12, null);
 		assertEquals("fruit", register.printItemCategories());
 	}
 
 	@Test
-	public void addFruitItemCategoryUpperCase() {
+	public void testAddFruitItemCategoryUpperCase() {
 		Register register = new Register(0);
 		register.addItemCategory("FRUIT", VATRate.VAT_12, null);
 		assertEquals("fruit", register.printItemCategories());
 	}
 
 	@Test
-	public void addItemCategoryNoName() {
+	public void testAddItemCategoryNoName() {
 		Register register = new Register(0);
 		assertThrows(IllegalArgumentException.class, () -> {
 			register.addItemCategory("", VATRate.VAT_12, null);
@@ -66,14 +66,14 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addSupplier() {
+	public void testAddSupplier() {
 		Register register = new Register(0);
 		register.addSupplier("chiquita");
 		assertEquals("chiquita", register.printSuppliers());
 	}
 
 	@Test
-	public void addSupplierAgain() {
+	public void testAddSupplierAgain() {
 		Register register = new Register(0);
 		register.addSupplier("chiquita");
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -82,7 +82,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addSupplierNoName() {
+	public void testAddSupplierNoName() {
 		Register register = new Register(0);
 		assertThrows(IllegalArgumentException.class, () -> {
 			register.addSupplier("");
@@ -90,7 +90,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addSupplierOnlySpaces() {
+	public void testAddSupplierOnlySpaces() {
 		Register register = new Register(0);
 		assertThrows(IllegalArgumentException.class, () -> {
 			register.addSupplier("      ");
@@ -98,7 +98,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addBananaItem() {
+	public void testAddBananaItem() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
@@ -107,7 +107,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addBananaItemAgain() {
+	public void testAddBananaItemAgain() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
@@ -118,7 +118,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addBananaItemBeforeSupplier() {
+	public void testAddBananaItemBeforeSupplier() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -127,7 +127,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addBananaItemBeforeCategory() {
+	public void testAddBananaItemBeforeCategory() {
 		Register register = new Register(0);
 		register.addSupplier("chiquita");
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -136,7 +136,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void addItemNoName() {
+	public void testAddItemNoName() {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
@@ -148,7 +148,7 @@ public class TestRegister {
 	//////////////////////////////////////////////////////////////////
 
 	@Test
-	public void tryCreateNewReceipt() {
+	public void testTryCreateNewReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -159,7 +159,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void loggInEmployee() {
+	public void testLoggInEmployee() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -171,7 +171,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryScanningItem() {
+	public void testTryScanningItem() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -190,7 +190,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void removeItemFromReceipt() {
+	public void testRemoveItemFromReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -207,7 +207,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryParkReceipt() {
+	public void testTryParkReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -224,7 +224,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryToReturnItem() {
+	public void testTryToReturnItem() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -248,7 +248,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryCancelPurchase() {
+	public void testTryCancelPurchase() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -270,7 +270,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryfinishReceipt() {
+	public void testTryfinishReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -292,7 +292,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryfinishParkedReceipt() {
+	public void testTryfinishParkedReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -309,7 +309,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryLogOutEmployee() {
+	public void testTryLogOutEmployee() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -320,7 +320,7 @@ public class TestRegister {
 	}
 
 	@Test
-	public void tryAddEmployee() {
+	public void testTryAddEmployee() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
