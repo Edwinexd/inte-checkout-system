@@ -5,6 +5,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    `jacoco`
 }
 
 repositories {
@@ -30,35 +31,10 @@ publishing {
     }
 }
 
-tasks.create(name: "testCoverage", type: JacocoReport, dependsOn: "test") {
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
 
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports for the test build."
-
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-    }
-
-    def excludes = [
-            '**/*Test*.*',
-            '**/actions/*.*',
-            '**/core/*.*',
-            '**/markers/*.*',
-            '**/services/**/*.*',
-            '**/toolwindow/*.*',
-            '**/utils/*.*'
-    ]
-
-    def javaClasses = fileTree(dir: "${buildDir}/classes/java/main", excludes: excludes)
-    def kotlinClasses = fileTree(dir: "${buildDir}/classes/kotlin/main", excludes: excludes)
-    classDirectories.from = files([javaClasses, kotlinClasses])
-
-    sourceDirectories.from = files([
-            "$project.projectDir/src/main/java",
-            "$project.projectDir/src/main/kotlin",
-            "$buildDir/generated/source/kapt/test"
-    ])
-
-    executionData.from = files("${project.buildDir}/jacoco/test.exec")
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
 }
