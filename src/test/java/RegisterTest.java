@@ -19,7 +19,7 @@ import com.agie.Register;
 import com.agie.VATRate;
 
 
-public class TestRegister {
+public class RegisterTest {
 	
 	@Test
 	public void addValidFruitItemCategory() {
