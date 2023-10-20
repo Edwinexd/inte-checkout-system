@@ -14,7 +14,7 @@ public class TestEmployee {
 	
 	
 	@Test
-	public void createEmployee(){
+	public void testCreateEmployee(){
 		assertDoesNotThrow(() -> {
 			new Employee(5500, "Maria Svensson");
 		});
@@ -22,14 +22,14 @@ public class TestEmployee {
 	
 	
 	@Test
-	public void createEmployeeTooLongId(){
+	public void testCreateEmployeeTooLongId(){
 		assertThrows(IllegalArgumentException.class, () -> {
 			new Employee(500000, "Maria Svensson");
 		});
 	}
 	
 	@Test
-	public void createEmployeeNegativeIdNumber(){
+	public void testCreateEmployeeNegativeIdNumber(){
 		assertThrows(IllegalArgumentException.class, () -> {
 			new Employee(-50, "Maria Svensson");
 		});
@@ -37,7 +37,7 @@ public class TestEmployee {
 	
 	
 	@Test
-	public void doesEqualsMethodWork(){
+	public void testDoesEqualsMethodWork(){
 		Employee employee = new Employee(5500, "Maria Svensson");
 		Employee employee2 = new Employee(5500, "Maria Svensson");
 		boolean areTheyEqual = false;
@@ -50,7 +50,7 @@ public class TestEmployee {
 	
 
 	@Test
-	public void doEmployeeIdMatch(){
+	public void testDoEmployeeIdMatch(){
 		Employee employee = new Employee(5500, "Maria Svensson");
 		assertEquals(employee.getId(), 5500);
 	}
