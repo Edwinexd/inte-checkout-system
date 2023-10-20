@@ -51,8 +51,10 @@ jacoco {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
+        xml.outputLocation = file("$buildDir/reports/jacoco/testCoverage/testCoverage.xml")
         xml.required = true
         csv.required = false
         html.required = true
     }
+
 }
