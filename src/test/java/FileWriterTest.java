@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -21,6 +22,30 @@ public class FileWriterTest {
         assertThrows(IllegalArgumentException.class, () -> {
             new FileWriter(null, true);
         });
+    }
+
+    @Test
+    public void constructorPathEmptyThrowsException(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            new FileWriter("", true);
+        });
+    }
+
+    @Test
+    public void constructorPathIllegalCharactersThrowsException(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            new FileWriter("path\\with\\illegal\\characters", true);
+        });
+    }
+
+    @Test
+    public void constructorPathValidTest() throws IOException {
+        // This test will pass if the path is valid but taking into account that the file may not exist
+        try {
+            new FileWriter("/dev/null", true);
+        } catch (FileNotFoundException e) {
+
+        }
     }
 
     @Test
