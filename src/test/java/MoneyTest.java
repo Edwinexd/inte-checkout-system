@@ -11,7 +11,7 @@ import com.agie.Main;
 import com.agie.Money;
 import com.agie.Payment;
 
-public class TestMoney {
+public class MoneyTest {
 
 	@Test
     public void testGetPositiveAmount() {

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.agie.Employee;
 import com.agie.Register;
 
-public class TestEmployee {
+public class EmployeeTest {
 	
 	
 	@Test

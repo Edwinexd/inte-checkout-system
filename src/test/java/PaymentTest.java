@@ -10,7 +10,7 @@ import com.agie.Payment;
 import com.agie.Currency;
 import com.agie.PaymentType;
 
-public class TestPayment {
+public class PaymentTest {
 	
 
     @Test
