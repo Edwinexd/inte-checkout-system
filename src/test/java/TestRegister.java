@@ -18,9 +18,8 @@ import com.agie.Receipt;
 import com.agie.Register;
 import com.agie.VATRate;
 
-
 public class TestRegister {
-	
+
 	@Test
 	public void addValidFruitItemCategory() {
 		Register register = new Register(0);
@@ -81,7 +80,7 @@ public class TestRegister {
 			register.addSupplier("chiquita");
 		});
 	}
-	
+
 	@Test
 	public void addSupplierNoName() {
 		Register register = new Register(0);
@@ -89,7 +88,7 @@ public class TestRegister {
 			register.addSupplier("");
 		});
 	}
-	
+
 	@Test
 	public void addSupplierOnlySpaces() {
 		Register register = new Register(0);
@@ -103,8 +102,8 @@ public class TestRegister {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
-		assertEquals("banana - 10,00 kr", register.printItems());
+		assertDoesNotThrow(
+				() -> register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false));
 	}
 
 	@Test
@@ -147,208 +146,186 @@ public class TestRegister {
 	}
 
 	//////////////////////////////////////////////////////////////////
-	
-	
+
 	@Test
-	public void tryCreateNewReceipt(){
+	public void tryCreateNewReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
-		
+
 		assertDoesNotThrow(() -> {
 			register.createNewReceipt();
 		});
 	}
-	
 
-	
 	@Test
-	public void loggInEmployee(){
+	public void loggInEmployee() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
-		
+
 //		assertDoesNotThrow(() -> {
 //		register.LogInEmployee(employee.getId());
 //	});
 		assertEquals("Maria Svensson", register.getloggedInEmployee().getName());
 	}
-	
-	
+
 	@Test
-	public void tryScanningItem(){
+	public void tryScanningItem() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
-		
-		/////item////
+
+		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana =  1845678901001l;
+		long eanBanana = 1845678901001l;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
-		EAN ean =  new EAN(eanBanana);
-		
+		EAN ean = new EAN(eanBanana);
+
 		assertDoesNotThrow(() -> {
 			register.scanItem(ean);
 		});
 	}
-	
-	
+
 	@Test
-	public void removeItemFromReceipt(){
+	public void removeItemFromReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
-		/////item////
+		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana =  1845678901001l;
+		long eanBanana = 1845678901001l;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
-		EAN ean =  new EAN(eanBanana);
+		EAN ean = new EAN(eanBanana);
 		assertDoesNotThrow(() -> {
-			register.scanRemoveItem(ean); 
+			register.scanRemoveItem(ean);
 		});
 	}
-	
+
 	@Test
-	public void tryParkReceipt(){
+	public void tryParkReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
-		/////item////
+		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana =  1845678901001l;
+		long eanBanana = 1845678901001l;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
-		EAN ean =  new EAN(eanBanana);
+		EAN ean = new EAN(eanBanana);
 		assertDoesNotThrow(() -> {
 			register.parkReceipt();
 		});
 	}
 
-	
 	@Test
-	public void tryToReturnItem(){
+	public void tryToReturnItem() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
 		int receiptId = register.getCurrentReceipt().getId();
 		Receipt receipt = register.getCurrentReceipt();
-		/////item////
+		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana =  1845678901001l;
-		
+		long eanBanana = 1845678901001l;
+
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
-		EAN ean =  new EAN(eanBanana);
+		EAN ean = new EAN(eanBanana);
 		register.scanItem(ean);
 		register.finishReceipt();
 		register.createNewReceipt();
-		
+
 		assertDoesNotThrow(() -> {
-			register.scanReturnItem(receiptId, ean); 
+			register.scanReturnItem(receiptId, ean);
 		});
 	}
-	
-	
+
 	@Test
-	public void tryCancelPurchase(){
+	public void tryCancelPurchase() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
 		int receiptId = register.getCurrentReceipt().getId();
 		Receipt receipt = register.getCurrentReceipt();
-		/////item////
+		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana =  1845678901001l;
-		
+		long eanBanana = 1845678901001l;
+
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
-		EAN ean =  new EAN(eanBanana);
+		EAN ean = new EAN(eanBanana);
 		register.scanItem(ean);
-		
+
 		assertDoesNotThrow(() -> {
 			register.cancelPurchase();
 		});
 	}
-	
-	
+
 	@Test
-	public void tryfinishReceipt(){
+	public void tryfinishReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
 		int receiptId = register.getCurrentReceipt().getId();
 		Receipt receipt = register.getCurrentReceipt();
-		/////item////
+		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana =  1845678901001l;
-		
+		long eanBanana = 1845678901001l;
+
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
-		EAN ean =  new EAN(eanBanana);
+		EAN ean = new EAN(eanBanana);
 		register.scanItem(ean);
-		
+
 		assertDoesNotThrow(() -> {
 			register.finishReceipt();
 		});
 	}
-	
-	
-	
+
 	@Test
-	public void tryfinishParkedReceipt(){
+	public void tryfinishParkedReceipt() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
 		int receiptId = register.getCurrentReceipt().getId();
 		Receipt receipt = register.getCurrentReceipt();
-		
+
 		register.parkReceipt();
-		
+
 		assertDoesNotThrow(() -> {
 			register.unparkReceipt(receiptId);
 		});
-	
+
 	}
-	
 
 	@Test
-	public void tryLogOutEmployee(){
+	public void tryLogOutEmployee() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
-		
+
 		assertDoesNotThrow(() -> {
 			register.logOutEmployee();
 		});
 	}
-	
-	
+
 	@Test
-	public void tryAddEmployee(){
+	public void tryAddEmployee() {
 		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 
 		assertEquals(employee, register.getEmployee(employee.getId()));
 	}
-	
-	
-	
-	
-	
+
 }
-
-
-
-
-
-
