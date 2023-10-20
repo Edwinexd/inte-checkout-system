@@ -15,21 +15,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       
-      - name: Set up JDK 17
+      - name: Set up JDK 19
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '19'
           distribution: 'temurin'
           cache: maven
       
-      - name: Build with Maven
+      - name: Build & Test with Maven
         run: mvn --batch-mode --update-snapshots verify
-
-      - name: Run Tests
-        run: mvn --batch-mode --update-snapshots test
       
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: success() || failure()
-        with:
-          report_paths: '**/build/test-results/test/TEST-*.xml'
