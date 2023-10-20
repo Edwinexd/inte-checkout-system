@@ -9,7 +9,13 @@ public class Item {
     private final EAN ean;
     private final boolean weightBased;
 
-    public Item(String name, Money unitPrice, ItemCategory itemCategory, Deposit deposit, Supplier supplier, EAN ean, boolean weightBased) {
+    public Item(String name,
+            Money unitPrice,
+            ItemCategory itemCategory,
+            Deposit deposit,
+            Supplier supplier,
+            EAN ean,
+            boolean weightBased) {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null");
         }
@@ -57,21 +63,30 @@ public class Item {
 
     /**
      * Returns true if the unit price is based on weight in kilograms.
-    */
+     */
     public boolean isWeightBased() {
         return weightBased;
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode() * unitPrice.hashCode() * itemCategory.hashCode() * supplier.hashCode() * ean.hashCode() * Boolean.hashCode(weightBased);
+        return name.hashCode() *
+                unitPrice.hashCode() *
+                itemCategory.hashCode() *
+                supplier.hashCode() *
+                ean.hashCode() *
+                Boolean.hashCode(weightBased);
     }
 
     @Override
     public boolean equals(Object object) {
         if (object instanceof Item) {
             Item item = (Item) object;
-            return name.equals(item.name) && unitPrice.equals(item.unitPrice) && itemCategory.equals(item.itemCategory) && deposit.equals(item.deposit) && supplier.equals(item.supplier) && ean.equals(item.ean) && weightBased == item.weightBased;
+            return name.equals(item.name) &&
+                    unitPrice.equals(item.unitPrice) &&
+                    itemCategory.equals(item.itemCategory) &&
+                    supplier.equals(item.supplier) &&
+                    weightBased == item.weightBased;
         }
         return false;
     }
@@ -84,5 +99,5 @@ public class Item {
             return String.format("%s - %s kr", name, unitPrice);
         }
     }
-    
+
 }
