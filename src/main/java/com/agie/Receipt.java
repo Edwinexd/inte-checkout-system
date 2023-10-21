@@ -50,16 +50,16 @@ public class Receipt {
         return itemRowHolder.get(item);
     }
 
+    /*
+     * Adds a specified quantity of an item to the receipt.
+     * If the new total quantity of the item becomes zero, the item is removed from the receipt.
+     */
     public void addItem(Item item, double quantity) {
 
-        /*
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
 
-         */
-
-        //Negative values are allowed, but 0 is not.
         if (quantity == 0) {
             throw new IllegalArgumentException("Quantity cannot be zero");
         }
