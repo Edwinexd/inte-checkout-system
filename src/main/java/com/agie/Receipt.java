@@ -10,23 +10,25 @@ public class Receipt {
 
     private HashMap<Item, ItemRow> itemRowHolder = new HashMap<>();
     private ArrayList<Payment> paymentHolder = new ArrayList<>();
-    private final int Id;
+    private final Date receiptDate;
+    private final Customer customer;
+    private final int id;
     private Money totalWithoutTaxes;
     private Money taxesOnly;
     private boolean isPaid;
-    private final Date receiptDate;
-    private final Customer customer;
 
-    public Receipt(int Id, Customer customer){
-        if (Id <= -1) {
+    public Receipt(int id, Customer customer){
+        if (id < 0) {
             throw new IllegalArgumentException("ID can't be negative.");
         }
-        this.Id = Id;
+        this.id = id;
 
-        // TODO: Allow null customer
-        if(customer != null){
+        /*
+        if(customer == null){
             throw new IllegalArgumentException("Customer can't be null.");
         }
+         */
+
         this.customer = customer;
 
         totalWithoutTaxes = new Money(0, Currency.SEK); //TODO: Could there be EUR? USD? GBP? etc. Worth looking into.
@@ -37,7 +39,7 @@ public class Receipt {
     }
 
     public int getId() {
-        return this.Id;
+        return this.id;
     }
 
     private HashMap<Item, ItemRow> getItemRowHolder() {
@@ -99,14 +101,13 @@ public class Receipt {
 
     public void addPayment(Payment payment) {
 
-        /*
-
-        Lägg till detta i Payment klassen.
-        Borde inte kollas i Receipt
-
         if(payment == null){
             throw new IllegalArgumentException("Payment cannot be null");
         }
+
+        /*
+        Lägg till detta i Payment klassen.
+        Borde inte kollas i Receipt
 
         if(payment.getMoney().getAmount().compareTo(BigDecimal.ZERO) == 0){
             throw new IllegalArgumentException("Payment cannot be zero");
@@ -115,7 +116,6 @@ public class Receipt {
         if(payment.getMoney().getAmount().compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalArgumentException("Payment cannot be negative");
         }
-
          */
 
         paymentHolder.add(payment);
