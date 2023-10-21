@@ -74,7 +74,6 @@ public class Item {
                 unitPrice.hashCode() *
                 itemCategory.hashCode() *
                 supplier.hashCode() *
-                ean.hashCode() *
                 Boolean.hashCode(weightBased);
     }
 
