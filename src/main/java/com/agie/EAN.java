@@ -23,27 +23,29 @@ public class EAN {
         // https://boxshot.com/barcode/tutorials/ean-13-calculator/
         int evenSum = 0;
         int oddSum = 0;
-
-        int[] digits = new int[EAN_LENGTH-1];
+        
         number /= 10; // Discard check digit
-        for (int i = digits.length-1; i >= 0; i--) {
+
+        for (int i = 0; i < EAN_LENGTH-1; i++) {
             // cast is safe as % 10 will yield a single digit reminder
-            digits[i] = (int) (number % 10);
+            int digit = (int) (number % 10);
+
             number /= 10;
-        }
-        for (int i = 0; i < digits.length; i++) {
-            // Formula uses 1-index counting
-            if ((i+1) % 2 == 0) {
-                evenSum += digits[i];
+
+            if (i % 2 == 0) {
+                evenSum += digit;
             } else {
-                oddSum += digits[i];
+                oddSum += digit;
             }
         }
+        
         evenSum *= 3;
+
         int checkDigit = (evenSum + oddSum) % 10;
         if (checkDigit != 0) {
             checkDigit = 10 - checkDigit;
         }
+
         return checkDigit;
     }
 
