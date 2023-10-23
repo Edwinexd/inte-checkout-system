@@ -3,6 +3,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 
@@ -13,6 +16,9 @@ import com.agie.Currency;
 import com.agie.EAN;
 import com.agie.Employee;
 import com.agie.Item;
+import com.agie.LogLevel;
+import com.agie.Logger;
+import com.agie.LoggingException;
 import com.agie.Money;
 import com.agie.Receipt;
 import com.agie.Register;
@@ -328,5 +334,78 @@ public class RegisterTest {
 
 		assertEquals(employee, register.getEmployee(employee.getId()));
 	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	// AI Generated tests for testing logging within the register class
+	// the logger class is mocked and dependency injected into the register class
+	// to ensure that Logger is being called correctly
+
+	// logs to be tested:
+	// * created new receipt
+	// * cancelled purchase of receipt
+	// * parked receipt
+	// * finished receipt
+	// * resumed receipt
+
+	// refactored manually
+	private Register setupRegisterWithLogger(Logger logger) throws LoggingException {
+		Register register = new Register(1, logger);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		return register;
+	}
+
+	@Test
+	public void createReceiptIsLogged() throws LoggingException {
+		Logger logger = mock(Logger.class);
+		Register register = setupRegisterWithLogger(logger);
+		int receiptId = register.getCurrentReceipt().getId();
+		verify(logger, times(1)).log(LogLevel.INFO, String.format("Created new receipt #%d", receiptId));
+	}
+
+	@Test
+	public void cancelPurchaseIsLogged() throws LoggingException {
+		Logger logger = mock(Logger.class);
+		Register register = setupRegisterWithLogger(logger);
+		// manually swapped order of cancel and get id or null pointer exception occurs
+		int receiptId = register.getCurrentReceipt().getId();
+		register.cancelPurchase();
+		verify(logger, times(1)).log(LogLevel.INFO, String.format("Cancelled purchase of receipt #%d", receiptId));
+	}
+
+	@Test
+	public void parkReceiptIsLogged() throws LoggingException {
+		Logger logger = mock(Logger.class);
+		Register register = setupRegisterWithLogger(logger);
+		int receiptId = register.getCurrentReceipt().getId();
+		register.parkReceipt();
+		verify(logger, times(1)).log(LogLevel.INFO, String.format("Parked receipt #%d", receiptId));
+	}
+
+	@Test
+	public void finishReceiptIsLogged() throws LoggingException {
+		Logger logger = mock(Logger.class);
+		Register register = setupRegisterWithLogger(logger);
+		int receiptId = register.getCurrentReceipt().getId();
+		register.finishReceipt();
+		verify(logger, times(1)).log(LogLevel.INFO, String.format("Finished receipt #%d", receiptId));
+	}
+
+	@Test
+	public void unparkReceiptIsLogged() throws LoggingException {
+		Logger logger = mock(Logger.class);
+		Register register = setupRegisterWithLogger(logger);
+		int receiptId = register.getCurrentReceipt().getId();
+		register.parkReceipt();
+		register.unparkReceipt(receiptId);
+		verify(logger, times(1)).log(LogLevel.INFO, String.format("Resumed receipt #%d", receiptId));
+	}
+
+
+	// Stop Copilot/GPT 3.5 Turbo generated tests
+	// ---------------------------------------------------------------------------------------------
+
 
 }
