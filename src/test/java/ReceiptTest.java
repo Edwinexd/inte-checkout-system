@@ -14,10 +14,26 @@ public class ReceiptTest {
         return new Customer(200001010001l);
     }
 
+    public Receipt getReceiptWithoutCustomer() {
+        return new Receipt(1, null);
+    }
+    
+    public Receipt getReceiptWithYoungCustomer() {
+        return new Receipt(1, new Customer(201001010001l));
+    }
+
+    
+
     public Item getStandardItem(){
         ItemCategory fruit = new ItemCategory("Fruit", VATRate.VAT_12, null);
         Supplier supplier = new Supplier("Supplier");
         return new Item("Apple", new Money(1, Currency.SEK), fruit, null, supplier, null, true);
+    }
+
+    public Item getItemWithEighteenAgeLimit(){
+        ItemCategory alcohol = new ItemCategory("Alcohol", VATRate.VAT_25, AgeLimit.AGE_LIMIT_18);
+        Supplier supplier = new Supplier("Supplier");
+        return new Item("Beer", new Money(1, Currency.SEK), alcohol, null, supplier, null, true);
     }
 
     private Payment getStandardPayment() {
@@ -203,4 +219,34 @@ Måste fixa så att vi kan nå private metod
         r.addPayment(p3);
         assertEquals(0, r.getChange()); // TODO: FIX
     }*/
+
+    // Test addItem with item that has a category that has a age limit
+    // if the customer is under the age limit, the item should not be added and a IllegalArgumentException should be thrown
+
+    @Test
+    public void addItemWithAgeLimitCustomerNull(){
+        Receipt r = getReceiptWithoutCustomer();
+        Item item = getItemWithEighteenAgeLimit();
+        double quantity = 1;
+
+        assertThrows(IllegalArgumentException.class, () -> r.addItem(item, quantity));
+    }
+
+    @Test
+    public void addItemWithAgeLimitCustomerUnderAge(){
+        Receipt r = getReceiptWithYoungCustomer();
+        Item item = getItemWithEighteenAgeLimit();
+        double quantity = 1;
+
+        assertThrows(IllegalArgumentException.class, () -> r.addItem(item, quantity));
+    }
+
+    @Test
+    public void addItemWithAgeLimitCustomerHasAge(){
+        Receipt r = getStandardReceipt();
+        Item item = getItemWithEighteenAgeLimit();
+        double quantity = 1;
+
+        r.addItem(item, quantity);
+    }
 }
