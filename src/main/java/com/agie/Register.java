@@ -19,10 +19,14 @@ public class Register {
 	private Customer customer;
 	private int receiptIdCounter;
 	private int employeeId;
+	private ReceiptPrinter receiptPrinter;
 
 	public Register(int registerNr) {
 		this.registerNumber = registerNr;
 	}
+	
+	
+	
 
 	public Employee getEmployee(int id) {
 		return allEmployees.get(id);
@@ -161,10 +165,33 @@ public class Register {
 		parkedReceipts.put(currentReceipt.getId(), currentReceipt);
 		currentReceipt = null;
 	}
+	
+	
+	////////////////////////////////////////////////////////
+	
+	public boolean printReceipt() {
+		return receiptPrinter.printActiveReceipt();
+	}
+	
+	public int getHowManyPaperLeft() {
+		return receiptPrinter.getPaperLeft();
+	}
+	
+	public boolean printDailyReceipts(){
+		return receiptPrinter.printDailyReceipts();
+	}
+	
+//	public boolean printActiveReceipt() {
+//		return receiptPrinter.printReceipt(currentReceipt);
+//	}
 
+	
 	public String printOutReceipt() {
 		return currentReceipt.toString();
 	}
+	
+	
+	////////////////////////////////////////////////////////
 
 	public void finishReceipt() {
 		printOutReceipt();
