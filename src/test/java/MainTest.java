@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import com.agie.Main;
 
-public class TestMain {
+public class MainTest {
 
     @Test
     public void testAdd() {

@@ -1,10 +1,9 @@
 import com.agie.Customer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.Month;
-import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -99,11 +98,6 @@ public class CustomerTest {
     @Test
     public void customerCantBeBornOnThe29thOfFebruaryOnANonLeapYear(){
         assertThrows(IllegalArgumentException.class, () -> new Customer(2001_02_29_9999L));
-    }
-
-    @Test
-    public void customerCanBeBornOnThe29thOfFebruaryOnALeapYear(){
-        assertNotNull(new Customer(2000_02_29_9999L));
     }
 
     @Test

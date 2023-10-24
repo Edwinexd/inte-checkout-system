@@ -1,14 +1,20 @@
 package com.agie;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class FileWriter implements LogHandler {
+    private static final Pattern pathPattern = Pattern.compile("^[\\w./]+$");
     private java.io.FileWriter fileWriter;
 
     public FileWriter(String path, boolean append) throws IOException {
         if (path == null) {
             throw new IllegalArgumentException("path cannot be null");
         }
+        if (!pathPattern.matcher(path).matches()) {
+            throw new IllegalArgumentException("path contains illegal characters");
+        }
+
         this.fileWriter = new java.io.FileWriter(path, append);
     }
 
