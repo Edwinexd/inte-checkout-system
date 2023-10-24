@@ -11,6 +11,12 @@ public class Money {
 	private BigDecimal amountInSek;
 	
 	public Money(BigDecimal amount, Currency currency) {
+		if (amount == null) {
+			throw new IllegalArgumentException("Amount cannot be null");
+		}
+		if (currency == null) {
+			throw new IllegalArgumentException("Currency cannot be null");
+		}
 		amount = amount.setScale(SCALE, java.math.RoundingMode.HALF_UP);
 		exchangeRatesToSek.put(Currency.SEK, new BigDecimal(1));
 		exchangeRatesToSek.put(Currency.EUR, new BigDecimal(10));

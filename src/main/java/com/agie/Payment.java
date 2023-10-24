@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 public class Payment {
 	
-	private PaymentType usedPaymentType;
-	private Money amountPaid;
+	private PaymentType chosenPaymentType;
+	private Money amount;
 	private static final BigDecimal purchaseLimitCash = new BigDecimal(50000);
 	private static final BigDecimal purchaseLimitDebitcard = new BigDecimal(50000);
 	private static final BigDecimal purchaseLimitCreditcard = new BigDecimal(50000);
@@ -20,9 +20,13 @@ public class Payment {
 	private static final BigDecimal refundLimitCreditcard = new BigDecimal(-50000);
 	private static final BigDecimal refundLimitGiftcard = new BigDecimal(0);
 	private static final BigDecimal refundLimitSwish = new BigDecimal(-10000);
+	private PaymentTerminal paymentTerminal;
+	private boolean processed;
 
 
 	
+	
+
 	public Payment(Money money, PaymentType paymentType) {
 		if(money == null ) {
 			throw new IllegalArgumentException("Money cannot be null");
@@ -31,9 +35,43 @@ public class Payment {
 			throw new IllegalArgumentException("Paymenttype cannot be null");
 		}
 		checkPaymentValidity(money, paymentType);
-		processPayment(money, paymentType);
-		amountPaid = money;
-		usedPaymentType = paymentType;
+		amount = money;
+		chosenPaymentType = paymentType;
+	}
+	
+	public void processPayment() {
+		Money money = this.amount;
+		PaymentType paymentType = this.chosenPaymentType;
+		boolean paymentWentThrough = false;
+		switch (paymentType) {
+		case CASH:
+			paymentWentThrough = true;
+			break;
+		case CREDIT_CARD:
+			paymentWentThrough = paymentTerminal.makeCreditCardTransaction(money);
+			break;
+		case DEBIT_CARD:
+			paymentWentThrough = paymentTerminal.makeDebitCardTransaction(money);
+			break;
+		case GIFT_CARD:
+			paymentWentThrough = true;
+			break;
+		case SWISH:
+			paymentWentThrough = true;
+			break;
+		}
+		if (!paymentWentThrough) {
+			throw new IllegalStateException("Payment could not be made");
+		}
+		processed = true;
+	}
+	
+	private void checkPaymentStatus() {
+		paymentTerminal.getPaymentStatus();
+	}
+	
+	private void cancelPayment() {
+		paymentTerminal.getPaymentStatus();
 	}
 	
 	private void checkPaymentValidity(Money money, PaymentType paymentType) {
@@ -105,23 +143,20 @@ public class Payment {
 		}
 	}
 
-	private void processPayment(Money money, PaymentType paymentType) {
-		boolean paymentWentThrough = true;
-		if (!paymentWentThrough) {
-			throw new IllegalStateException("Payment could not be made");
-		}
-	}
-
 	public BigDecimal getAmount(Currency sek) {
-		return amountPaid.getAmount();
+		return amount.getAmount();
 	}
 	
 	public Money getMoney() {
-		return amountPaid;
+		return amount;
 	}
 	
 	public PaymentType getPaymentType() {
-		return usedPaymentType;
+		return chosenPaymentType;
+	}
+	
+	public boolean isProcessed() {
+		return processed;
 	}
 	
     
