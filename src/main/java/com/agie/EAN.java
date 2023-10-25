@@ -4,6 +4,7 @@ public class EAN {
     private static final int EAN_LENGTH = 13;
 
     private final long number;
+    private final int countryCode, checkDigit;
 
     public EAN (long number) {
         if (number < 0) {
@@ -12,11 +13,27 @@ public class EAN {
         if (Long.toString(number).length() != EAN_LENGTH) {
             throw new IllegalArgumentException("Only EAN-13 supported");
         }
-        if (getCheckDigit(number) != number % 10) {
+
+        int checkDigit = (int) (number % 10);
+
+        if (getCheckDigit(number) != checkDigit) {
             throw new IllegalArgumentException("Invalid check digit");
         }
 
+        // validate country code
+        int countryCode = (int) (number / 10000000000L);
+
+        if (!EANCountryCodes.isValidCountryCode(countryCode)) {
+            throw new IllegalArgumentException("Invalid country code");
+        }
+
+        if (EANCountryCodes.isInternalCountryCode(countryCode)) {
+            throw new IllegalArgumentException("Internal country code");
+        }
+
         this.number = number;
+        this.countryCode = countryCode;
+        this.checkDigit = checkDigit;
     }
 
     private int getCheckDigit(long number) {
@@ -46,6 +63,14 @@ public class EAN {
             checkDigit = 10 - checkDigit;
         }
 
+        return checkDigit;
+    }
+
+    public int getCountryCode () {
+        return countryCode;
+    }
+
+    public int getCheckDigit () {
         return checkDigit;
     }
 
