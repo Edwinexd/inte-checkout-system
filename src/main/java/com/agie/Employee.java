@@ -9,6 +9,7 @@ public class Employee {
 	private int id;
 	private String name;
 	private static final int EMPLOYEE_MAX_ID = 10000;
+	private static final int EMPLOYEE_NAME_MAX_LENGHT = 40;
 
 	public Employee(int id, String name) {
 		if (id < 0) {
@@ -18,9 +19,23 @@ public class Employee {
 		if (id > EMPLOYEE_MAX_ID) {
 			throw new IllegalArgumentException("id out of range");
 		}
-		
+
 		this.id = id;
+		
+		if (name == null) {
+			throw new IllegalArgumentException("name can't be null");
+		}
+		
+		if (name == "") {
+			throw new IllegalArgumentException("name can't be empty");
+		}
+		
+		if (name.length() > EMPLOYEE_NAME_MAX_LENGHT) {
+			throw new IllegalArgumentException("name too long");
+		}
+		
 		this.name = name;
+		
 	}
 
 	public int getId() {
@@ -43,12 +58,7 @@ public class Employee {
 		}
 	}
 	
-//	@Override
-//	public int hashCode(){
-//		return Objects.hash(id, name);
-//	}
 
-	
 }
 
 
