@@ -9,8 +9,10 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import com.agie.Employee;
 import com.agie.Register;
+import com.agie.VATRate;
 
 public class EmployeeTest {
+	
 	
 	
 	@Test
@@ -24,6 +26,27 @@ public class EmployeeTest {
 	public void testGetName(){
 		Employee employee = new Employee(5500, "Maria Svensson");
 		assertEquals(employee.getName(), "Maria Svensson");
+	}
+	
+	@Test
+	public void nameNullTest() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			new Employee(5500, null);
+		});
+	}
+	
+	@Test
+	public void nameEmptyTest() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			new Employee(5500, "");
+		});
+	}
+	
+	@Test
+	public void nameTooLongTest() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			new Employee(5500, "MariaEvaMaria SvenssonJohanssonSvenssonSvenssonSvenssonSvensson");
+		});
 	}
 	
 	
@@ -41,7 +64,6 @@ public class EmployeeTest {
 		});
 	}
 	
-	
 	@Test
 	public void testDoesEqualsMethodWork(){
 		Employee employee = new Employee(5500, "Maria Svensson");
@@ -55,7 +77,7 @@ public class EmployeeTest {
 	}
 	
 	@Test
-	public void hashCodeTest(){
+	public void equalTest(){
 		Employee employee = new Employee(5500, "Maria Svensson");
 		Employee employee2 = new Employee(5500, "Maria Svensson");
 		boolean areTheyEqual = false;
