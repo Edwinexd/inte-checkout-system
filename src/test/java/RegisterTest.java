@@ -110,7 +110,7 @@ public class RegisterTest {
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
 		assertDoesNotThrow(
-				() -> register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false));
+				() -> register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false));
 	}
 
 	@Test
@@ -118,9 +118,9 @@ public class RegisterTest {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+		register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -129,7 +129,7 @@ public class RegisterTest {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -138,7 +138,7 @@ public class RegisterTest {
 		Register register = new Register(0);
 		register.addSupplier("chiquita");
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -148,7 +148,7 @@ public class RegisterTest {
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -187,7 +187,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
 
@@ -205,7 +205,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
 		assertDoesNotThrow(() -> {
@@ -222,7 +222,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
 		assertDoesNotThrow(() -> {
@@ -241,7 +241,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
@@ -265,7 +265,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
@@ -287,7 +287,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
