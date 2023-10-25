@@ -11,7 +11,7 @@ public class Money {
 	private BigDecimal amountInSek;
 	
 	public Money(BigDecimal amount, Currency currency) {
-		if (amount == null) {
+		if (amount == null) { 
 			throw new IllegalArgumentException("Amount cannot be null");
 		}
 		if (currency == null) {
