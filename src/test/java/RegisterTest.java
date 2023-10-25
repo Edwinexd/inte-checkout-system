@@ -1,12 +1,18 @@
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agie.AgeLimit;
 import com.agie.Currency;
@@ -15,11 +21,20 @@ import com.agie.Employee;
 import com.agie.Item;
 import com.agie.Money;
 import com.agie.Receipt;
+import com.agie.ReceiptPrinter;
 import com.agie.Register;
+import com.agie.Supplier;
 import com.agie.VATRate;
 
-
+@ExtendWith(MockitoExtension.class)
 public class RegisterTest {
+	
+	@Mock
+	ReceiptPrinter receiptPrinter;
+
+	@InjectMocks
+	Register register = new Register(1);
+
 	
 	@Test
 	public void testAddValidFruitItemCategory() {
@@ -50,13 +65,15 @@ public class RegisterTest {
 		register.addItemCategory("    fruit", VATRate.VAT_12, null);
 		assertEquals("fruit", register.printItemCategories());
 	}
-
+	
 	@Test
 	public void testAddFruitItemCategoryUpperCase() {
 		Register register = new Register(0);
 		register.addItemCategory("FRUIT", VATRate.VAT_12, null);
 		assertEquals("fruit", register.printItemCategories());
 	}
+	
+	
 
 	@Test
 	public void testAddItemCategoryNoName() {
@@ -69,8 +86,8 @@ public class RegisterTest {
 	@Test
 	public void testAddSupplier() {
 		Register register = new Register(0);
-		register.addSupplier("chiquita");
-		assertEquals("chiquita", register.printSuppliers());
+		Supplier supplier = register.addSupplier("chiquita");
+		assertEquals(supplier, register.getSupplier("chiquita"));
 	}
 
 	@Test
@@ -104,7 +121,7 @@ public class RegisterTest {
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
 		assertDoesNotThrow(
-				() -> register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false));
+				() -> register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false));
 	}
 
 	@Test
@@ -112,9 +129,9 @@ public class RegisterTest {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+		register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -123,7 +140,7 @@ public class RegisterTest {
 		Register register = new Register(0);
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -132,7 +149,7 @@ public class RegisterTest {
 		Register register = new Register(0);
 		register.addSupplier("chiquita");
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("banana", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -142,7 +159,7 @@ public class RegisterTest {
 		register.addItemCategory("fruit", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
 		assertThrows(IllegalArgumentException.class, () -> {
-			register.addItem("", 10, "fruit", null, "chiquita", null, 1845678901001l, false);
+			register.addItem("", 10, "fruit", null, "chiquita", null, 1235678901000L, false);
 		});
 	}
 
@@ -181,7 +198,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
 
@@ -199,7 +216,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
 		assertDoesNotThrow(() -> {
@@ -216,7 +233,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
 		assertDoesNotThrow(() -> {
@@ -226,7 +243,8 @@ public class RegisterTest {
 
 	@Test
 	public void testTryToReturnItem() {
-		Register register = new Register(1);
+		when(receiptPrinter.printActiveReceipt()).thenReturn(true);
+//		Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
@@ -235,7 +253,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
@@ -259,7 +277,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
@@ -272,7 +290,9 @@ public class RegisterTest {
 
 	@Test
 	public void testTryfinishReceipt() {
-		Register register = new Register(1);
+		
+		when(receiptPrinter.printActiveReceipt()).thenReturn(true);
+		//Register register = new Register(1);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
 		register.createNewReceipt();
@@ -281,7 +301,7 @@ public class RegisterTest {
 		///// item////
 		register.addItemCategory("fruits", VATRate.VAT_12, null);
 		register.addSupplier("chiquita");
-		long eanBanana = 1845678901001l;
+		long eanBanana = 1235678901000L;
 
 		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
 		EAN ean = new EAN(eanBanana);
@@ -328,5 +348,251 @@ public class RegisterTest {
 
 		assertEquals(employee, register.getEmployee(employee.getId()));
 	}
+	
+	
+	/////////////////////chatgpt //////////////////////////
+	
 
+
+    @Test
+    void testLogInEmployeeWithExistingId() {
+        Register register = new Register(1);
+        Employee employee = new Employee(1, "John Doe");
+        register.getEmployees().put(1, employee);
+
+        assertDoesNotThrow(() -> register.LogInEmployee(1));
+        assertEquals(employee, register.getloggedInEmployee());
+    }
+
+    @Test
+    void testLogInEmployeeWithNonExistingId() {
+        Register register = new Register(1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> register.LogInEmployee(2));
+        assertEquals("No employee with that id", exception.getMessage());
+    }
+
+    @Test
+    void testAddEmployee() {
+        Register register = new Register(1);
+
+        Employee addedEmployee = assertDoesNotThrow(() -> register.addEmployee("John Doe"));
+        assertEquals(addedEmployee, register.getEmployee(addedEmployee.getId()));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> register.addEmployee("John Doe"));
+        assertEquals("Employee Already added", exception.getMessage());
+    }
+
+    @Test
+    void testRemoveEmployee() {
+        Register register = new Register(1);
+        Employee addedEmployee = register.addEmployee("John Doe");
+
+        assertDoesNotThrow(() -> register.removeEmployee("John Doe"));
+        assertNull(register.getEmployee(addedEmployee.getId()));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> register.removeEmployee("NonExistentEmployee"));
+        assertEquals("There is no employee with that name", exception.getMessage());
+    }
+
+    @Test
+    void testLogOutEmployee() {
+        Register register = new Register(1);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> register.logOutEmployee());
+        assertEquals("No employee logged in", exception.getMessage());
+
+        Employee employee = new Employee(1, "John Doe");
+        register.getEmployees().put(1, employee);
+        register.LogInEmployee(1);
+
+        assertDoesNotThrow(() -> register.logOutEmployee());
+        assertNull(register.getloggedInEmployee());
+    }
+	
+	
+	///////////////////////////////////////////////////////
+
+    
+	@Test
+	public void createNewReceiptLoggedinNullTest() {
+		
+		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+
+		assertThrows(IllegalStateException.class, () -> {
+			register.createNewReceipt();
+		});
+	}
+	
+	
+	@Test
+	public void scanItemNullTest() {
+
+		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		
+		long eanBanana = 1235678901000L;
+		EAN ean = new EAN(eanBanana);
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			register.scanItem(ean);
+		});
+	}
+	
+	
+	@Test
+	public void scanRemoveItemNullTest() {
+		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		
+		long eanBanana = 1235678901000L;
+		EAN ean = new EAN(eanBanana);
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			register.scanRemoveItem(ean);
+		});
+	}
+	
+	@Test
+	public void testTryToReturnItemNullTest() {
+//		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		int receiptId = 1000;
+		Receipt receipt = register.getCurrentReceipt();
+		///// item////
+
+		long eanBanana = 1235678901000L;
+		EAN ean = new EAN(eanBanana);
+
+		assertThrows(IllegalArgumentException.class, () -> {
+			register.scanReturnItem(receiptId, ean);
+		});
+		
+	}
+	
+	
+	@Test
+	public void unparkReceiptNullTest2() {
+		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		int receiptId = register.getCurrentReceipt().getId();
+		Receipt receipt = register.getCurrentReceipt();
+		register.parkReceipt();
+
+		assertThrows(IllegalStateException.class, () -> {
+			register.unparkReceipt(1000);
+		});
+
+	}
+	
+	@Test
+	public void unparkReceiptNullTest3() {
+		Register register = new Register(1);
+		assertThrows(IllegalStateException.class, () -> {
+			register.unparkReceipt(1000);
+		});
+	}
+
+
+	
+	@Test
+	public void removeItemFromItemCollectionTest() {
+		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		///// item////
+		register.addItemCategory("fruits", VATRate.VAT_12, null);
+		register.addSupplier("chiquita");
+		long eanBanana = 1235678901000L;
+		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
+		EAN ean = new EAN(eanBanana);
+		
+		assertDoesNotThrow(() -> {
+			register.removeItem(ean);
+		});
+		
+	}
+	
+	
+	@Test
+	public void removeItemFromItemCategoriesTest2() {
+		Register register = new Register(1);
+		Employee employee = register.addEmployee("Maria Svensson");
+		register.LogInEmployee(employee.getId());
+		register.createNewReceipt();
+		///// item////
+		register.addItemCategory("fruits", VATRate.VAT_12, null);
+		register.addSupplier("chiquita");
+		long eanBanana = 1235678901000L;
+		register.addItem("banana", 10, "fruits", null, "chiquita", null, eanBanana, false);
+		EAN ean = new EAN(eanBanana);
+		
+		assertDoesNotThrow(() -> {
+			register.removeItemCategory("fruits");
+		});
+	}
+	
+	
+
+	@Test
+	public void removeItemFromItemCategoriesNullTest3() {
+		Register register = new Register(1);
+		assertThrows(IllegalArgumentException.class, () -> {
+			register.removeItemCategory("fruits");
+		});
+		
+	}
+	
+	
+	@Test
+	public void removeItemFromItemCollectionNullTest() {
+		Register register = new Register(1);
+		assertThrows(IllegalArgumentException.class, () -> {
+			register.removeItem(null);
+		});
+	}
+	
+	
+	@Test
+	public void removeSupplierTest() {
+		Register register = new Register(0);
+		Supplier supplier = register.addSupplier("chiquita");
+		assertDoesNotThrow(() -> {
+			register.removeSupplier("chiquita");
+		});
+	}
+	
+	@Test
+	public void removeSupplierNullTest() {
+		Register register = new Register(0);
+		assertThrows(IllegalArgumentException.class, () -> {
+			register.removeSupplier("chiquita");
+		});
+	}
+	
+
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+
+	
 }
+
+
+
+
+
