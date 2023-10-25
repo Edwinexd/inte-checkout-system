@@ -38,29 +38,29 @@ public class ReceiptTest {
     // Tests start here
 
     @Test
-    public void receiptNotNull() {
+    public void notNull() {
         assertNotNull(getStandardReceipt());
     }
 
     @Test
-    public void receiptConstructor() {
+    public void constructorDoesNotThrow() {
         assertDoesNotThrow(() -> getStandardReceipt());
     }
 
     @Test
-    public void receiptGetId() {
+    public void getId() {
         Receipt r = getStandardReceipt();
         assertEquals(1, r.getId());
     }
 
     @Test
-    public void receiptDateNotNull() {
+    public void dateNotNull() {
         Receipt r = getStandardReceipt();
         assertNotNull(r.getDate());
     }
 
     @Test
-    public void receiptCorrectDateDatatype() {
+    public void correctDateDatatype() {
         Receipt r = getStandardReceipt();
 
         assertTrue(r.getDate() instanceof Date);
@@ -68,19 +68,19 @@ public class ReceiptTest {
 
     // Date starts counting years from 1900
     @Test
-    public void receiptCorrectYear() {
+    public void correctYear() {
         Receipt r = getStandardReceipt();
         assertEquals(Calendar.getInstance().get(Calendar.YEAR), r.getDate().getYear() + 1900);
     }
 
     @Test
-    public void receiptCorrectMonth() {
+    public void correctMonth() {
         Receipt r = getStandardReceipt();
         assertEquals(Calendar.getInstance().get(Calendar.MONTH), r.getDate().getMonth());
     }
 
     @Test
-    public void receiptCorrectDay() {
+    public void correctDay() {
         Receipt r = getStandardReceipt();
         Calendar c = Calendar.getInstance();
         assertEquals(c.get(Calendar.DAY_OF_MONTH), r.getDate().getDate());
@@ -94,14 +94,14 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptIdCantBeLessThanOne() {
+    public void idCantBeLessThanOne() {
         assertThrows(IllegalArgumentException.class, () -> {
             new Receipt(-1, getStandardCustomer());
         });
     }
 
     @Test
-    public void receiptAddItemDoesNotThrow() {
+    public void addItemDoesNotThrow() {
         Receipt receipt = getStandardReceipt();
         ItemRow row = getStandardItemRow();
 
@@ -116,20 +116,20 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptReturnsPnr() {
+    public void returnsPnr() {
         Customer c = getStandardCustomer();
 
         assertEquals(200001010001l, c.getPnr());
     }
 
     @Test
-    public void receiptTotalReturnZero() {
+    public void totalReturnZero() {
         Receipt r = getStandardReceipt();
         assertEquals(new Money(0, Currency.SEK).getAmount(), r.getTotal());
     }
 
     @Test
-    public void receiptAddOnePayment() {
+    public void addOnePayment() {
         Receipt r = getStandardReceipt();
         Payment p = getStandardPayment();
 
@@ -138,7 +138,7 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptAddMultiplePayment() {
+    public void addMultiplePayment() {
         Receipt r = getStandardReceipt();
         Payment p1 = getStandardPayment();
         Payment p2 = getStandardPayment();
@@ -315,7 +315,7 @@ public class ReceiptTest {
     }
 
     @Test
-    public void toStringWithPaymentsAndItems() {
+    public void toStringNotNullWithPaymentsAndItems() {
         Receipt r = getStandardReceipt();
         Payment p1 = getStandardPayment();
         Payment p2 = getStandardPayment();
