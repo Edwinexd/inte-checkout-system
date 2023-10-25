@@ -35,10 +35,6 @@ public class Receipt {
         return this.id;
     }
 
-    private HashMap<Item, ItemRow> getItemRowHolder() {
-        return itemRowHolder;
-    }
-
     public ItemRow getItemRow(Item item) {
         return itemRowHolder.get(item);
     }
@@ -63,6 +59,10 @@ public class Receipt {
         return paymentHolder;
     }
 
+    private HashMap<Item, ItemRow> getItemRowHolder() {
+        return itemRowHolder;
+    }
+
     public BigDecimal getChange() {
         BigDecimal total = this.getTotal();
         Money change = new Money(total, Currency.SEK);
@@ -81,7 +81,6 @@ public class Receipt {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
-
         if (quantity == 0) {
             throw new IllegalArgumentException("Quantity cannot be zero");
         }

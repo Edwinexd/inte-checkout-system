@@ -299,4 +299,13 @@ public class ReceiptTest {
 
         assertTrue(r.getTotalWithoutTaxes().compareTo(new BigDecimal(1.000)) == 0);
     }
+
+    @Test
+
+
+    @Test
+    public void toStringNotNull(){
+        Receipt r = getStandardReceipt();
+        assertNotNull(r.toString());
+    }
 }
