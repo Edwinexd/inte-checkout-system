@@ -7,10 +7,13 @@ public interface PaymentTerminal {
 	public void start() throws IllegalStateException;
 	public void restart() throws IllegalStateException;
 	public boolean abortOperation() throws IllegalStateException;
-	public paymentStatus getPaymentStatus() throws IllegalStateException;
+	public PaymentStatus getPaymentStatus() throws IllegalStateException;
 	public boolean retryLastOperation() throws IllegalStateException;
+	public boolean isTurnedOn();
+	public boolean isReady();
 	
-	enum paymentStatus {
+	
+	enum PaymentStatus {
 		INITIATED,
 		PROCESSING,
 		FINISHED
