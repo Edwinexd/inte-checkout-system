@@ -16,7 +16,7 @@ public class Receipt {
     private Money taxesOnly;
     private boolean isPaid;
 
-    public Receipt(int id, Customer customer){
+    public Receipt(final int id, final Customer customer) {
         if (id < 0) {
             throw new IllegalArgumentException("ID can't be negative.");
         }
@@ -25,7 +25,7 @@ public class Receipt {
         this.customer = customer;
 
         totalWithoutTaxes = new Money(0, Currency.SEK);
-        taxesOnly = new Money(0 , Currency.SEK);
+        taxesOnly = new Money(0, Currency.SEK);
 
         receiptDate = new Date(); // timestamp
         isPaid = false;
@@ -64,7 +64,7 @@ public class Receipt {
     }
 
     public BigDecimal getChange() {
-        BigDecimal total = this.getTotal();
+        final BigDecimal total = this.getTotal();
         Money change = new Money(total, Currency.SEK);
 
         for (int i = 0; i < getPayments().size(); i++) {
@@ -75,8 +75,10 @@ public class Receipt {
 
     /*
      * Adds a specified quantity of an item to the receipt.
-     * If the new total quantity of the item becomes zero, the item is removed from the receipt.
+     * If the new total quantity of the item becomes zero
+     * the item is removed from the receipt.
      */
+
     public void addItem(Item item, double quantity) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
@@ -113,13 +115,13 @@ public class Receipt {
     }
 
     private void checkIfPaid() {
-        BigDecimal total = this.getTotal();
+        final BigDecimal total = this.getTotal();
         BigDecimal amountPaid = new BigDecimal(0);
-        for (int i = 0; i < paymentHolder.size(); i++) {
-            amountPaid = amountPaid.add(paymentHolder.get(i).getMoney().getAmount());
+        for (Payment payment : paymentHolder) {
+            amountPaid = amountPaid.add(payment.getMoney().getAmount());
 
             //If the customer has paid the exact amount or more, the receipt is paid
-            if(amountPaid.compareTo(total) >= 0){
+            if (amountPaid.compareTo(total) >= 0) {
                 this.isPaid = true;
                 return;
             }
@@ -132,7 +134,7 @@ public class Receipt {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Receipt ID: ");
         sb.append(getId());

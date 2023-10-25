@@ -16,7 +16,7 @@ public class Customer {
 
     public Customer(final long personalNumber) {
         if (personalNumber < 0) {
-            throw new IllegalArgumentException("person number can't be negative");
+            throw new IllegalArgumentException("Person number can't be negative");
         }
         if (!isLengthOfPnrValid(personalNumber)) {
             throw new IllegalArgumentException("Person number has to be 12 in length");
@@ -42,6 +42,14 @@ public class Customer {
         }
         this.pnr = personalNumber;
         this.age = getAgeByPersonalNumber(pnrYear, pnrMonth, pnrDay);
+    }
+
+    public long getPnr() {
+        return this.pnr;
+    }
+
+    public int getAge() {
+        return this.age;
     }
 
     private int getAgeByPersonalNumber(final int year, final int month, final int day) {
@@ -125,13 +133,5 @@ public class Customer {
     // Returns true if so, otherwise false.
     private boolean isYearALeapYear(final int year) {
         return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
-    }
-
-    public long getPnr() {
-        return this.pnr;
-    }
-
-    public int getAge() {
-        return this.age;
     }
 }

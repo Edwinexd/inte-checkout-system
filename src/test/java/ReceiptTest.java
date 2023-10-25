@@ -1,4 +1,5 @@
 import com.agie.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -42,7 +43,7 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptConstructor(){
+    public void receiptConstructor() {
         assertDoesNotThrow(() -> getStandardReceipt());
     }
 
@@ -59,7 +60,7 @@ public class ReceiptTest {
     }
 
     @Test
-    public void receiptCorrectDateDatatype(){
+    public void receiptCorrectDateDatatype() {
         Receipt r = getStandardReceipt();
 
         assertTrue(r.getDate() instanceof Date);
@@ -69,17 +70,17 @@ public class ReceiptTest {
     @Test
     public void receiptCorrectYear() {
         Receipt r = getStandardReceipt();
-        assertEquals(Calendar.getInstance().get(Calendar.YEAR), r.getDate().getYear()+1900);
+        assertEquals(Calendar.getInstance().get(Calendar.YEAR), r.getDate().getYear() + 1900);
     }
 
     @Test
-    public void receiptCorrectMonth(){
+    public void receiptCorrectMonth() {
         Receipt r = getStandardReceipt();
         assertEquals(Calendar.getInstance().get(Calendar.MONTH), r.getDate().getMonth());
     }
 
     @Test
-    public void receiptCorrectDay(){
+    public void receiptCorrectDay() {
         Receipt r = getStandardReceipt();
         Calendar c = Calendar.getInstance();
         assertEquals(c.get(Calendar.DAY_OF_MONTH), r.getDate().getDate());
@@ -105,6 +106,13 @@ public class ReceiptTest {
         ItemRow row = getStandardItemRow();
 
         assertDoesNotThrow(() -> receipt.addItem(row.getItem(), row.getQuantity()));
+    }
+
+    @Test
+    public void addItemZeroQuantity() {
+        Receipt r = getStandardReceipt();
+        ItemRow row = getStandardItemRow();
+        assertThrows(IllegalArgumentException.class, () -> r.addItem(row.getItem(), 0));
     }
 
     @Test
@@ -301,8 +309,28 @@ public class ReceiptTest {
     }
 
     @Test
-    public void toStringNotNull(){
+    public void toStringNotNull() {
         Receipt r = getStandardReceipt();
+        assertNotNull(r.toString());
+    }
+
+    @Test
+    public void toStringWithPaymentsAndItems() {
+        Receipt r = getStandardReceipt();
+        Payment p1 = getStandardPayment();
+        Payment p2 = getStandardPayment();
+        Payment p3 = getStandardPayment();
+
+        Item item = getStandardItem();
+
+        r.addItem(item, 1);
+        r.addItem(item, 1);
+        r.addItem(item, 1);
+
+        r.addPayment(p1);
+        r.addPayment(p2);
+        r.addPayment(p3);
+
         assertNotNull(r.toString());
     }
 }

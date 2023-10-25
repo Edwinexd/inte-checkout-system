@@ -1,5 +1,6 @@
 import com.agie.Customer;
 import org.junit.jupiter.api.Test;
+
 import static org.mockito.Mockito.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,20 +12,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CustomerTest {
 
     // A standard customer. No Leap year.
-    private Customer getStandardCustomer(){
+    private Customer getStandardCustomer() {
         return new Customer(1990_01_01_9999L);
     }
 
     // Helper method to build a pnr
-    private String pnrBuilder(int year, int month, int day, String serial){
+    private String pnrBuilder(int year, int month, int day, String serial) {
 
         String monthBuilder = "" + month;
         String dayBuilder = "" + day;
 
-        if(month < 10){
+        if (month < 10) {
             monthBuilder = "0" + month;
         }
-        if(day < 10){
+        if (day < 10) {
             dayBuilder = "0" + day;
         }
 
@@ -33,45 +34,47 @@ public class CustomerTest {
 
     // Tests start here
     @Test
-    public void customerNotNull(){
+    public void customerNotNull() {
         assertNotNull(getStandardCustomer());
     }
+
     @Test
-    public void customerIsBornOnTheFirstOfJanuaryDoesNotThrow(){
+    public void customerIsBornOnTheFirstOfJanuaryDoesNotThrow() {
         assertDoesNotThrow(this::getStandardCustomer);
     }
 
     @Test
-    public void customerGetPnr(){
+    public void customerGetPnr() {
         Customer c = getStandardCustomer();
         assertEquals(1990_01_01_9999L, c.getPnr());
     }
 
     @Test
-    public void customerPnrCantBeMoreThanTwelveInLength(){
-        assertThrows(IllegalArgumentException.class, () ->{
+    public void customerPnrCantBeMoreThanTwelveInLength() {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Customer(1990_01_01_9999_0L); //13 digits long
         });
     }
+
     @Test
-    public void customerPnrCantBeLessThan12InLength(){
-        assertThrows(IllegalArgumentException.class, () ->{
+    public void customerPnrCantBeLessThan12InLength() {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Customer(1990_01_01_999L); // 11 digits long
         });
     }
 
     @Test
-    public void customerPnrCantBe12InLengthAndNegative(){
+    public void customerPnrCantBe12InLengthAndNegative() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(-1990_01_01_999L));
     }
 
     @Test
-    public void customerPnrCantBeNegative(){
+    public void customerPnrCantBeNegative() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(-1L));
     }
 
     @Test
-    public void customerPnrLengthIsTwelve(){
+    public void customerPnrLengthIsTwelve() {
         Customer c = new Customer(199001019999L);
         assertEquals(12, String.valueOf(c.getPnr()).length());
     }
@@ -97,7 +100,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void customerCantBeBornInAFutureYear(){
+    public void customerCantBeBornInAFutureYear() {
         Calendar calendar = Calendar.getInstance();
         Calendar calendarMock = mock(Calendar.class);
 
@@ -114,7 +117,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void customerCantBeBornOnAFutureMonth(){
+    public void customerCantBeBornOnAFutureMonth() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 2);
         String futureDate = pnrBuilder(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), "9999");
@@ -123,7 +126,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void customerCantBeBornOnAFutureDay(){
+    public void customerCantBeBornOnAFutureDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 1);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -134,92 +137,92 @@ public class CustomerTest {
     }
 
     @Test
-    public void customerBornOnLeapYearFebruary28thDoesntThrowException(){
+    public void customerBornOnLeapYearFebruary28thDoesntThrowException() {
         assertDoesNotThrow(() -> new Customer(2000_02_28_9999L));
     }
 
     @Test
-    public void customerBornOnNonLeapYearFebruary28thDoesntThrowException(){
+    public void customerBornOnNonLeapYearFebruary28thDoesntThrowException() {
         assertDoesNotThrow(() -> new Customer(2001_02_28_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe29thOfFebruaryOnANonLeapYear(){
+    public void customerCantBeBornOnThe29thOfFebruaryOnANonLeapYear() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2001_02_29_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe30thOfFebruaryOnALeapYear(){
+    public void customerCantBeBornOnThe30thOfFebruaryOnALeapYear() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_02_30_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe31stOfFebruaryOnALeapYear(){
+    public void customerCantBeBornOnThe31stOfFebruaryOnALeapYear() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_02_31_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe31stOfApril(){
+    public void customerCantBeBornOnThe31stOfApril() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_04_31_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe31stOfJune(){
+    public void customerCantBeBornOnThe31stOfJune() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_06_31_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe31stOfSeptember(){
+    public void customerCantBeBornOnThe31stOfSeptember() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_09_31_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe31stOfNovember(){
+    public void customerCantBeBornOnThe31stOfNovember() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_11_31_9999L));
     }
 
     @Test
-    public void customerCanBeBornOnThe30thOfNovember(){
+    public void customerCanBeBornOnThe30thOfNovember() {
         assertDoesNotThrow(() -> new Customer(2000_11_30_9999L));
     }
 
     @Test
-    public void customerCanBeBornOnThe31stOfMarch(){
+    public void customerCanBeBornOnThe31stOfMarch() {
         assertDoesNotThrow(() -> new Customer(2000_03_31_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe32ndOfJanuary(){
+    public void customerCantBeBornOnThe32ndOfJanuary() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_01_32_9999L));
     }
 
     @Test
-    public void customerCantBeBornOnThe00thOfJanuary(){
+    public void customerCantBeBornOnThe00thOfJanuary() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(2000_01_00_9999L));
     }
 
     @Test
-    public void customerCantBeBornBeforeTheYear1900(){
+    public void customerCantBeBornBeforeTheYear1900() {
         assertThrows(IllegalArgumentException.class, () -> new Customer(1899_12_31_9999L));
     }
 
     @Test
-    public void customerAgeIsNotNull(){
+    public void customerAgeIsNotNull() {
         Customer c = new Customer(2005_01_01_9999L);
         assertDoesNotThrow(c::getAge);
     }
 
     @Test
-    public void customerGetAgeIsCorrect(){
+    public void customerGetAgeIsCorrect() {
         Customer c = new Customer(2005_01_01_9999L);
         assertEquals(18, c.getAge());
     }
 
 
     @Test
-    public void customerAgeIs18YearsOldToday(){
+    public void customerAgeIs18YearsOldToday() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH,1);
+        calendar.add(Calendar.MONTH, 1);
 
         String futureDate = pnrBuilder(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), "9999");
         Customer c = new Customer(Long.parseLong(futureDate));
@@ -227,9 +230,9 @@ public class CustomerTest {
     }
 
     @Test
-    public void customerAgeIs18YearsOldTomorrow(){
+    public void customerAgeIs18YearsOldTomorrow() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH,1);
+        calendar.add(Calendar.MONTH, 1);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         String futureDate = pnrBuilder(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), "9999");
@@ -238,9 +241,9 @@ public class CustomerTest {
     }
 
     @Test
-    public void customerAgeIs18YearsOldYesterday(){
+    public void customerAgeIs18YearsOldYesterday() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH,1);
+        calendar.add(Calendar.MONTH, 1);
 
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         String futureDate = pnrBuilder(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), "9999");
