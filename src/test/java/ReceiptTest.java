@@ -301,9 +301,6 @@ public class ReceiptTest {
     }
 
     @Test
-
-
-    @Test
     public void toStringNotNull(){
         Receipt r = getStandardReceipt();
         assertNotNull(r.toString());
