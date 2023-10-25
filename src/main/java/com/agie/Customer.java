@@ -16,7 +16,7 @@ public class Customer {
 
     public Customer(final long personalNumber) {
         if (personalNumber < 0) {
-            throw new IllegalArgumentException("person number can't be negative");
+            throw new IllegalArgumentException("Person number can't be negative");
         }
         if (!isLengthOfPnrValid(personalNumber)) {
             throw new IllegalArgumentException("Person number has to be 12 in length");
@@ -44,6 +44,14 @@ public class Customer {
         this.age = getAgeByPersonalNumber(pnrYear, pnrMonth, pnrDay);
     }
 
+    public long getPnr() {
+        return this.pnr;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+
     private int getAgeByPersonalNumber(final int year, final int month, final int day) {
         final Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 1); // Since Calendar uses 0-indexed months, we have to add 1 to the month.
@@ -63,8 +71,8 @@ public class Customer {
 
     // A Personal Number has to be positive and 12 digits in length.
     // EXAMPLE: 199001011234 is a valid personal number.
-    private boolean isLengthOfPnrValid(final Long personNumber) {
-        final String pnrString = "" + personNumber;
+    private boolean isLengthOfPnrValid(final Long personalNumber) {
+        final String pnrString = "" + personalNumber;
         return pnrString.length() == 12;
     }
 
@@ -94,7 +102,6 @@ public class Customer {
                 return day > calendar.get(Calendar.DAY_OF_MONTH);
             }
         }
-
         // If none of the conditions are met, the provided date is not in the future, so return false.
         return false;
     }
@@ -126,13 +133,5 @@ public class Customer {
     // Returns true if so, otherwise false.
     private boolean isYearALeapYear(final int year) {
         return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
-    }
-
-    public long getPnr() {
-        return this.pnr;
-    }
-
-    public int getAge() {
-        return this.age;
     }
 }
