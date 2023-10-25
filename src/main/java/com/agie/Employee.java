@@ -32,24 +32,21 @@ public class Employee {
 	}
 
 	
-	
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Employee) {
 			Employee e = (Employee) obj;
 			return this.id == e.id && this.name.equals(e.name);
 		}
-		
 		else {
 			return false;
 		}
 	}
 	
-	@Override
-	public int hashCode(){
-		return Objects.hash(id, name);
-	}
+//	@Override
+//	public int hashCode(){
+//		return Objects.hash(id, name);
+//	}
 
 	
 }
