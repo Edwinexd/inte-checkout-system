@@ -21,8 +21,8 @@ public class Register {
 	private Customer customer;
 	private int receiptIdCounter;
 	private int employeeId;
+	private ReceiptPrinter receiptPrinter;
 	private Optional<Logger> logger;
-
 
 	public Register(int registerNr) {
 		this(registerNr, null);
@@ -46,6 +46,7 @@ public class Register {
 			}
 		}
 	}
+	
 
 	public Employee getEmployee(int id) {
 		return allEmployees.get(id);
@@ -74,6 +75,7 @@ public class Register {
 		return itemCategory;
 	}
 
+	
 	public void removeItemCategory(String name) {
 		name = formatStringInput(name);
 		if (itemCategories.get(name) == null) {
@@ -82,6 +84,7 @@ public class Register {
 		itemCategories.remove(name);
 	}
 
+	
 	public Supplier addSupplier(String name) {
 		name = formatStringInput(name);
 		if (suppliers.get(name) != null) {
@@ -99,6 +102,7 @@ public class Register {
 		}
 		suppliers.remove(name);
 	}
+	
 
 	// TODO: se över om meden ska ta in itemcategory resp supplier objekt istf strängar
 	public Item addItem(String name, int costInSek, String itemCategory, Deposit deposit, String supplier,
@@ -121,14 +125,18 @@ public class Register {
 		return item;
 	}
 
-	public void removeItem(String name) {
-		name = formatStringInput(name);
-		if (itemCollection.get(name) == null) {
+	public void removeItem(EAN ean) {
+		if (itemCollection.get(ean) == null) {
 			throw new IllegalArgumentException("No Item with that name");
 		}
-		itemCategories.remove(name);
+		itemCollection.remove(ean);
 	}
 
+	
+	
+////////////////////////////////////////////////////////////////////////////
+	
+	
 	public Receipt createNewReceipt() {
 		if(loggedInEmployee == null) {
 			throw new IllegalStateException("No user is logged in");
@@ -164,10 +172,12 @@ public class Register {
 				currentReceipt.addItem(item, -1);
 			}
 		}
+		
 		if (item == null) {
 			throw new IllegalArgumentException("There is no item with that ean code");
 		}
 	}
+	
 
 	public void scanReturnItem(int receiptId, EAN ean) {
 
@@ -176,6 +186,30 @@ public class Register {
 		}
 		scanRemoveItem(ean);
 	}
+	
+
+	public void unparkReceipt(int id) {
+//		if (currentReceipt != null) {
+//			throw new IllegalStateException("There is an active receipt already");
+//		}
+		if (!parkedReceipts.containsKey(id)) {
+			throw new IllegalStateException("There is no parked receipt with that id");
+		}
+		currentReceipt = parkedReceipts.get(id);
+		parkedReceipts.remove(id);
+		log(String.format("Resumed receipt #%d", currentReceipt.getId()));
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+	
+	public void finishReceipt() {
+		log(String.format("Finished receipt #%d", currentReceipt.getId()));
+		printReceipt();
+		receiptHistory.put(currentReceipt.getId(), currentReceipt);
+		currentReceipt = null;
+	}
+	
 
 	public void cancelPurchase() {
 		log(String.format("Cancelled purchase of receipt #%d", currentReceipt.getId()));
@@ -187,30 +221,38 @@ public class Register {
 		parkedReceipts.put(currentReceipt.getId(), currentReceipt);
 		currentReceipt = null;
 	}
-
-	public String printOutReceipt() {
-		return currentReceipt.toString();
+	
+	
+	////////////////Mock objekt////////////////////////////////////////
+	
+	public boolean printReceipt() {
+		return receiptPrinter.printActiveReceipt();
 	}
-
-	public void finishReceipt() {
-		log(String.format("Finished receipt #%d", currentReceipt.getId()));
-		printOutReceipt();
-		receiptHistory.put(currentReceipt.getId(), currentReceipt);
-		currentReceipt = null;
+	
+	public int getHowManyPaperLeft() {
+		return receiptPrinter.getPaperLeft();
 	}
-
-	public void unparkReceipt(int id) {
-		if (currentReceipt != null) {
-			throw new IllegalStateException("There is an active receipt already");
-		}
-		if (!parkedReceipts.containsKey(id)) {
-			throw new IllegalStateException("There is no parked receipt with that id");
-		}
-		currentReceipt = parkedReceipts.get(id);
-		parkedReceipts.remove(id);
-		log(String.format("Resumed receipt #%d", currentReceipt.getId()));
+	
+	
+	public boolean printDailyReceipts(){
+		return receiptPrinter.printDailyReceipts();
 	}
+	
+//	public boolean printActiveReceipt() {
+//		return receiptPrinter.printReceipt(currentReceipt);
+//	}
+	
+	
+	////////////////////////////////////////////////////////
 
+
+
+	
+	public HashMap<Integer, Employee> getEmployees(){
+		return allEmployees;
+	}
+	
+	
 	public void LogInEmployee(int id) {
 
 		if (allEmployees.containsKey(id)) {
@@ -219,10 +261,12 @@ public class Register {
 			throw new IllegalArgumentException("No employee with that id");
 		}
 	}
+	
 
-	public Employee getloggedInEmployee() {
+	public Employee getloggedInEmployee(){
 		return loggedInEmployee;
 	}
+	
 
 	public void logOutEmployee() {
 		if(loggedInEmployee == null) {
@@ -230,6 +274,7 @@ public class Register {
 		}
 		loggedInEmployee = null;
 	}
+	
 
 	public Employee addEmployee(String name) {
 		for (Employee employee : allEmployees.values()) {
@@ -256,34 +301,9 @@ public class Register {
 			throw new IllegalArgumentException("There is no employee with that name");
 		}
 		allEmployees.remove(employeeToBeRemoved.getId());
-
 	}
 	
-	public int getRegisterNr() {
-		return registerNumber;
-	}
-
-	public String printReceiptHistory() {
-		return receiptHistory.toString();
-	}
-
-	public String printParkedReceipts() {
-		return parkedReceipts.toString();
-	}
-
-	// TODO: Se över namngivningen
-	public String printEmployeeList() {
-		return allEmployees.toString();
-	}
 	
-	public String printItems() {
-		String itemsString = "";
-		for (Item item : itemCollection.values()) {
-			itemsString = itemsString + item.toString();
-		}
-		return itemsString;
-	}
-
 	public String printItemCategories() {
 		String itemCategoriesString = "";
 		for (ItemCategory itemCategory : itemCategories.values()) {
@@ -292,24 +312,13 @@ public class Register {
 		return itemCategoriesString;
 	}
 
-	public String printSuppliers() {
-		String suppliersString = "";
-		for (Supplier supplier : suppliers.values()) {
-			suppliersString = suppliersString + supplier.getName();
-		}
-		return suppliersString;
+	public Supplier getSupplier(String supplierName) {
+		return suppliers.get(supplierName);
 	}
-
-	public String printCurrentReceipt() {
-		return currentReceipt.toString();
-	}
-
-	public String printLoggedInEmployee() {
-		return loggedInEmployee.toString();
-	}
-
-	public String printCustomer() {
-		return customer.toString();
-	}
-
+	
+	
 }
+
+
+
+
