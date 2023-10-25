@@ -1,9 +1,11 @@
 
 package com.agie;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class Register {
 
@@ -19,9 +21,30 @@ public class Register {
 	private Customer customer;
 	private int receiptIdCounter;
 	private int employeeId;
+	private Optional<Logger> logger;
+
 
 	public Register(int registerNr) {
+		this(registerNr, null);
+	}
+
+	public Register(int registerNr, Logger logger) {
 		this.registerNumber = registerNr;
+		this.logger = Optional.ofNullable(logger);
+	}
+
+	private void log(String message) {
+		log(LogLevel.INFO, message);
+	}
+
+	private void log(LogLevel logLevel, String message) {
+		if (logger.isPresent()) {
+			try {
+				logger.get().log(LogLevel.INFO, message);
+			} catch (LoggingException e) {
+				throw new RuntimeException("Error logging message", e);
+			}
+		}
 	}
 
 	public Employee getEmployee(int id) {
@@ -112,6 +135,7 @@ public class Register {
 		} else {
 			currentReceipt = new Receipt(receiptIdCounter, customer);
 			receiptIdCounter++;
+			log(String.format("Created new receipt #%d", currentReceipt.getId()));
 			return currentReceipt;
 		}
 	}
@@ -154,10 +178,12 @@ public class Register {
 	}
 
 	public void cancelPurchase() {
+		log(String.format("Cancelled purchase of receipt #%d", currentReceipt.getId()));
 		currentReceipt = null;
 	}
 
 	public void parkReceipt() {
+		log(String.format("Parked receipt #%d", currentReceipt.getId()));
 		parkedReceipts.put(currentReceipt.getId(), currentReceipt);
 		currentReceipt = null;
 	}
@@ -167,6 +193,7 @@ public class Register {
 	}
 
 	public void finishReceipt() {
+		log(String.format("Finished receipt #%d", currentReceipt.getId()));
 		printOutReceipt();
 		receiptHistory.put(currentReceipt.getId(), currentReceipt);
 		currentReceipt = null;
@@ -181,6 +208,7 @@ public class Register {
 		}
 		currentReceipt = parkedReceipts.get(id);
 		parkedReceipts.remove(id);
+		log(String.format("Resumed receipt #%d", currentReceipt.getId()));
 	}
 
 	public void LogInEmployee(int id) {

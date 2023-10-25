@@ -26,9 +26,6 @@ public class FileWriter implements LogHandler {
     }
 
     private void write(String message) throws LoggingException {
-        if (message == null) {
-            throw new IllegalArgumentException("message cannot be null");
-        }
         try {
             fileWriter.write(message);
         } catch (IOException e) {
