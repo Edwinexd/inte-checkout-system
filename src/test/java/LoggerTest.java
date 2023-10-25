@@ -14,7 +14,7 @@ public class LoggerTest {
         return mockedFileWriter;
     }
 
-    private void writeLineOfEachLevel(Logger logger) throws LoggingException {
+    private void writesLineOfEachLevel(Logger logger) throws LoggingException {
         logger.log(LogLevel.DEBUG, "debug message");
         logger.log(LogLevel.INFO, "info message");
         logger.log(LogLevel.WARNING, "warning message");
