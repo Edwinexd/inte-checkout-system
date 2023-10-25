@@ -40,6 +40,11 @@ public class RegisterTest {
 
 	@InjectMocks
 	Register register = new Register(1);
+	
+	Logger logger = mock(Logger.class);
+	
+	@InjectMocks
+	Register registerWithLogger = setupRegisterWithLogger(logger);
 
 	
 	@Test
@@ -607,7 +612,7 @@ public class RegisterTest {
 	// * resumed receipt
 
 	// refactored manually
-	private Register setupRegisterWithLogger(Logger logger) throws LoggingException {
+	private Register setupRegisterWithLogger(Logger logger) {
 		Register register = new Register(1, logger);
 		Employee employee = register.addEmployee("Maria Svensson");
 		register.LogInEmployee(employee.getId());
@@ -644,10 +649,10 @@ public class RegisterTest {
 
 	@Test
 	public void finishReceiptIsLogged() throws LoggingException {
-		Logger logger = mock(Logger.class);
-		Register register = setupRegisterWithLogger(logger);
-		int receiptId = register.getCurrentReceipt().getId();
-		register.finishReceipt();
+		when(receiptPrinter.printActiveReceipt()).thenReturn(true);
+		registerWithLogger.createNewReceipt();
+		int receiptId = registerWithLogger.getCurrentReceipt().getId();
+		registerWithLogger.finishReceipt();
 		verify(logger, times(1)).log(LogLevel.INFO, String.format("Finished receipt #%d", receiptId));
 	}
 
