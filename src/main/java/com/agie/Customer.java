@@ -63,8 +63,8 @@ public class Customer {
 
     // A Personal Number has to be positive and 12 digits in length.
     // EXAMPLE: 199001011234 is a valid personal number.
-    private boolean isLengthOfPnrValid(final Long personNumber) {
-        final String pnrString = "" + personNumber;
+    private boolean isLengthOfPnrValid(final Long personalNumber) {
+        final String pnrString = "" + personalNumber;
         return pnrString.length() == 12;
     }
 
@@ -94,7 +94,6 @@ public class Customer {
                 return day > calendar.get(Calendar.DAY_OF_MONTH);
             }
         }
-
         // If none of the conditions are met, the provided date is not in the future, so return false.
         return false;
     }
