@@ -87,6 +87,10 @@ public class Receipt {
             throw new IllegalArgumentException("Quantity cannot be zero");
         }
 
+        if (item.getItemCategory().getAgeLimit() != null && (customer == null || customer.getAge() < item.getItemCategory().getAgeLimit().getAgeLimit())) {
+            throw new IllegalArgumentException("Customer is not old enough to purchase this item");
+        }
+
         ItemRow itemRow = itemRowHolder.get(item);
         if (itemRow == null) {
             itemRow = new ItemRow(item, quantity);
