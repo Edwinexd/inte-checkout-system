@@ -34,7 +34,7 @@ public class EANTest {
     @Test
     public void constructorValidCountryCodeCheckDigitTest() {
         EAN ean = new EAN(VALID_EAN);
-        assertEquals(ean.getCountryCode(), 123);
+        assertEquals(ean.getCountryCode(), 13);
         assertEquals(ean.getCheckDigit(), 8);
     }
 
